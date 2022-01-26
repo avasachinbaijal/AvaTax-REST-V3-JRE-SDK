@@ -1,0 +1,12 @@
+/RUNNING_PID
+/logs/
+/project/*-shim.sbt
+/project/project/
+/project/target/
+/project/swagger.json
+/target/
+.idea/
+release.sh
+
+key\.asc
+.vs/*
