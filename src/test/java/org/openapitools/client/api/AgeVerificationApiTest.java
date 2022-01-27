@@ -16,11 +16,14 @@ package org.openapitools.client.api;
 import Avalara.SDK.ApiClient;
 import Avalara.SDK.ApiException;
 import Avalara.SDK.Configuration;
+import Avalara.SDK.AvaTaxEnvironment;
 import org.openapitools.client.model.AgeVerifyFailureCode;
 import org.openapitools.client.model.AgeVerifyRequest;
 import org.openapitools.client.model.AgeVerifyResult;
 import org.junit.Test;
 import org.junit.Ignore;
+
+import org.openapitools.client.model.AgeVerifyRequestAddress;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,11 +35,21 @@ import java.util.Map;
  */
 @Ignore
 public class AgeVerificationApiTest {
-    // TODO: How do we setup the configuration object
-    private Configuration configuration = new Configuration();
-    private ApiClient apiClient = new ApiClient(configuration);
-    private final AgeVerificationApi api = new AgeVerificationApi(apiClient);
-    
+    private AgeVerificationApi api;
+
+    public AgeVerificationApiTest() {
+        Configuration configuration = new Configuration();
+        configuration.setAppName("Test");
+        configuration.setAppVersion("1.0");
+        configuration.setMachineName("LocalBox");
+        // Configure Auth to run test here.
+        configuration.setUsername("foo");
+        configuration.setPassword("bar");
+        configuration.setTimeout(5000);
+        configuration.setEnvironment(AvaTaxEnvironment.Sandbox);
+        ApiClient apiClient = new ApiClient(configuration);
+        api = new AgeVerificationApi(apiClient);
+    }
     /**
      * Determines whether an individual meets or exceeds the minimum legal drinking age.
      *
@@ -47,9 +60,15 @@ public class AgeVerificationApiTest {
      */
     @Test
     public void verifyAgeTest() throws ApiException {
-        AgeVerifyRequest ageVerifyRequest = null;
-        AgeVerifyFailureCode simulatedFailureCode = null;
-                AgeVerifyResult response = api.verifyAge(ageVerifyRequest, simulatedFailureCode);
+        AgeVerifyRequest request = new AgeVerifyRequest();
+        request.firstName("Test");
+        request.lastName("Person");
+        AgeVerifyRequestAddress address = new AgeVerifyRequestAddress();
+        address.line1("255 S King St");
+        address.postalCode("98109");
+        request.address(address);
+        request.setDOB("1970-01-01");
+        AgeVerifyResult response = api.verifyAge(request, null);
         // TODO: test validations
     }
     
