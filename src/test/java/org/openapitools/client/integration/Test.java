@@ -22,8 +22,8 @@ public class Test {
         configuration.setAppName("Test");
         configuration.setAppVersion("1.0");
         configuration.setMachineName("LocalBox");
-        configuration.setUsername("demo.compliance-verification");
-        configuration.setPassword("sxgv7KK4HX*B7vY@");
+        configuration.setUsername("foo");
+        configuration.setPassword("bar");
         configuration.setTimeout(5000);
         configuration.setEnvironment(AvaTaxEnvironment.Sandbox);
         ApiClient client = new ApiClient(configuration);
