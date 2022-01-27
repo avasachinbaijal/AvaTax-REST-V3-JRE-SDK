@@ -1,5 +1,4 @@
 .gitignore
-.openapi-generator-ignore
 .travis.yml
 README.md
 api/openapi.yaml
@@ -26,7 +25,6 @@ pom.xml
 settings.gradle
 src/main/AndroidManifest.xml
 src/main/java/Avalara/SDK/ApiCallback.java
-src/main/java/Avalara/SDK/ApiClient.java
 src/main/java/Avalara/SDK/ApiException.java
 src/main/java/Avalara/SDK/ApiResponse.java
 src/main/java/Avalara/SDK/Configuration.java
@@ -53,14 +51,3 @@ src/main/java/org/openapitools/client/model/ErrorDetailsError.java
 src/main/java/org/openapitools/client/model/ErrorDetailsErrorDetails.java
 src/main/java/org/openapitools/client/model/ShippingVerifyResult.java
 src/main/java/org/openapitools/client/model/ShippingVerifyResultLines.java
-src/test/java/org/openapitools/client/api/AgeVerificationApiTest.java
-src/test/java/org/openapitools/client/api/ShippingVerificationApiTest.java
-src/test/java/org/openapitools/client/model/AgeVerifyFailureCodeTest.java
-src/test/java/org/openapitools/client/model/AgeVerifyRequestAddressTest.java
-src/test/java/org/openapitools/client/model/AgeVerifyRequestTest.java
-src/test/java/org/openapitools/client/model/AgeVerifyResultTest.java
-src/test/java/org/openapitools/client/model/ErrorDetailsErrorDetailsTest.java
-src/test/java/org/openapitools/client/model/ErrorDetailsErrorTest.java
-src/test/java/org/openapitools/client/model/ErrorDetailsTest.java
-src/test/java/org/openapitools/client/model/ShippingVerifyResultLinesTest.java
-src/test/java/org/openapitools/client/model/ShippingVerifyResultTest.java
