@@ -43,7 +43,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>org.openapitools</groupId>
   <artifactId>openapi-java-client</artifactId>
-  <version>2.3.0</version>
+  <version>2.3.9</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -59,7 +59,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "org.openapitools:openapi-java-client:2.3.0"
+     implementation "org.openapitools:openapi-java-client:2.3.9"
   }
 ```
 
@@ -73,7 +73,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-- `target/openapi-java-client-2.3.0.jar`
+- `target/openapi-java-client-2.3.9.jar`
 - `target/lib/*.jar`
 
 ## Getting Started
