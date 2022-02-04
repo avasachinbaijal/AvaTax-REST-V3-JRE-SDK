@@ -23,7 +23,7 @@ import Avalara.SDK.ApiException;
 import Avalara.SDK.Configuration;
 import Avalara.SDK.auth.*;
 import Avalara.SDK.models.*;
-import org.openapitools.client.api.AgeVerificationApi;
+import Avalara.SDK.AgeVerificationApi;
 
 public class Example {
   public static void main(String[] args) {

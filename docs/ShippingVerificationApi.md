@@ -24,7 +24,7 @@ import Avalara.SDK.ApiException;
 import Avalara.SDK.Configuration;
 import Avalara.SDK.auth.*;
 import Avalara.SDK.models.*;
-import org.openapitools.client.api.ShippingVerificationApi;
+import Avalara.SDK.ShippingVerificationApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -103,7 +103,7 @@ import Avalara.SDK.ApiException;
 import Avalara.SDK.Configuration;
 import Avalara.SDK.auth.*;
 import Avalara.SDK.models.*;
-import org.openapitools.client.api.ShippingVerificationApi;
+import Avalara.SDK.ShippingVerificationApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -182,7 +182,7 @@ import Avalara.SDK.ApiException;
 import Avalara.SDK.Configuration;
 import Avalara.SDK.auth.*;
 import Avalara.SDK.models.*;
-import org.openapitools.client.api.ShippingVerificationApi;
+import Avalara.SDK.ShippingVerificationApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -264,7 +264,7 @@ import Avalara.SDK.ApiException;
 import Avalara.SDK.Configuration;
 import Avalara.SDK.auth.*;
 import Avalara.SDK.models.*;
-import org.openapitools.client.api.ShippingVerificationApi;
+import Avalara.SDK.ShippingVerificationApi;
 
 public class Example {
   public static void main(String[] args) {
