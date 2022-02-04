@@ -14,7 +14,7 @@
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.3.0
+ * @version    2.4.14-beta
  * @link       https://github.com/avadev/AvaTax-REST-V3-JRE-SDK
  */
 
@@ -174,7 +174,7 @@ public class Configuration {
     /**
      * Gets the SdkVersion - this value is auto-generated.
      */
-    private String SdkVersion = "2.3.0";
+    private String SdkVersion = "2.4.14-beta";
 
     public String getSdkVersion() {
         return SdkVersion;
