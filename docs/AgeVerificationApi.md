@@ -18,11 +18,11 @@ The request must meet the following criteria in order to be evaluated: * *firstN
 ### Example
 ```java
 // Import classes:
-import Avalara.SDK.ApiClient;
-import Avalara.SDK.ApiException;
-import Avalara.SDK.Configuration;
-import Avalara.SDK.auth.*;
-import Avalara.SDK.models.*;
+import org.openapitools.client.ApiClient;
+import org.openapitools.client.ApiException;
+import org.openapitools.client.Configuration;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.models.*;
 import org.openapitools.client.api.AgeVerificationApi;
 
 public class Example {

@@ -14,20 +14,20 @@
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.3.0
+ * @version    2.4.13
  * @link       https://github.com/avadev/AvaTax-REST-V3-JRE-SDK
  */
 
 package org.openapitools.client.api;
 
-import Avalara.SDK.ApiCallback;
-import Avalara.SDK.ApiClient;
-import Avalara.SDK.ApiException;
-import Avalara.SDK.ApiResponse;
-import Avalara.SDK.Configuration;
-import Avalara.SDK.Pair;
-import Avalara.SDK.ProgressRequestBody;
-import Avalara.SDK.ProgressResponseBody;
+import org.openapitools.client.ApiCallback;
+import org.openapitools.client.ApiClient;
+import org.openapitools.client.ApiException;
+import org.openapitools.client.ApiResponse;
+import org.openapitools.client.Configuration;
+import org.openapitools.client.Pair;
+import org.openapitools.client.ProgressRequestBody;
+import org.openapitools.client.ProgressResponseBody;
 
 import com.google.gson.reflect.TypeToken;
 
