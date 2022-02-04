@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.openapitools</groupId>
-    <artifactId>openapi-java-client</artifactId>
+    <groupId>Avalara.SDK</groupId>
+    <artifactId>Avalara.SDK</artifactId>
     <packaging>jar</packaging>
-    <name>openapi-java-client</name>
-    <version>2.3.0</version>
+    <name>Avalara.SDK</name>
+    <version>2.4.16</version>
     <url>https://github.com/openapitools/openapi-generator</url>
     <description>OpenAPI Java</description>
     <scm>

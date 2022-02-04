@@ -24,6 +24,7 @@ gradlew.bat
 pom.xml
 settings.gradle
 src/main/AndroidManifest.xml
+src/main/java/Avalara/SDK/AgeVerificationApi.java
 src/main/java/Avalara/SDK/ApiCallback.java
 src/main/java/Avalara/SDK/ApiException.java
 src/main/java/Avalara/SDK/ApiResponse.java
@@ -35,13 +36,12 @@ src/main/java/Avalara/SDK/ProgressRequestBody.java
 src/main/java/Avalara/SDK/ProgressResponseBody.java
 src/main/java/Avalara/SDK/ServerConfiguration.java
 src/main/java/Avalara/SDK/ServerVariable.java
+src/main/java/Avalara/SDK/ShippingVerificationApi.java
 src/main/java/Avalara/SDK/StringUtil.java
 src/main/java/Avalara/SDK/auth/ApiKeyAuth.java
 src/main/java/Avalara/SDK/auth/Authentication.java
 src/main/java/Avalara/SDK/auth/HttpBasicAuth.java
 src/main/java/Avalara/SDK/auth/HttpBearerAuth.java
-src/main/java/org/openapitools/client/api/AgeVerificationApi.java
-src/main/java/org/openapitools/client/api/ShippingVerificationApi.java
 src/main/java/org/openapitools/client/model/AgeVerifyFailureCode.java
 src/main/java/org/openapitools/client/model/AgeVerifyRequest.java
 src/main/java/org/openapitools/client/model/AgeVerifyRequestAddress.java
@@ -51,3 +51,5 @@ src/main/java/org/openapitools/client/model/ErrorDetailsError.java
 src/main/java/org/openapitools/client/model/ErrorDetailsErrorDetails.java
 src/main/java/org/openapitools/client/model/ShippingVerifyResult.java
 src/main/java/org/openapitools/client/model/ShippingVerifyResultLines.java
+src/test/java/Avalara/SDK/AgeVerificationApiTest.java
+src/test/java/Avalara/SDK/ShippingVerificationApiTest.java
