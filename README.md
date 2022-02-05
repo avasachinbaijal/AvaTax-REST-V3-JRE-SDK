@@ -1,8 +1,8 @@
-# openapi-java-client
+# Avalara.SDK
 
-Avalara Shipping Verification only
+Avalara Shipping Verification for Beverage Alcohol
 
-- API version: 3.1.0
+- API version: 2.1.0-beta
 
 API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.
 
@@ -41,9 +41,9 @@ Add this dependency to your project's POM:
 
 ```xml
 <dependency>
-  <groupId>org.openapitools</groupId>
-  <artifactId>openapi-java-client</artifactId>
-  <version>2.3.0</version>
+  <groupId>Avalara.SDK</groupId>
+  <artifactId>Avalara.SDK</artifactId>
+  <version>2.4.22</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -54,12 +54,12 @@ Add this dependency to your project's build file:
 
 ```groovy
   repositories {
-    mavenCentral()     // Needed if the 'openapi-java-client' jar has been published to maven central.
-    mavenLocal()       // Needed if the 'openapi-java-client' jar has been published to the local maven repo.
+    mavenCentral()     // Needed if the 'Avalara.SDK' jar has been published to maven central.
+    mavenLocal()       // Needed if the 'Avalara.SDK' jar has been published to the local maven repo.
   }
 
   dependencies {
-     implementation "org.openapitools:openapi-java-client:2.3.0"
+     implementation "Avalara.SDK:Avalara.SDK:2.4.22"
   }
 ```
 
@@ -73,7 +73,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-- `target/openapi-java-client-2.3.0.jar`
+- `target/Avalara.SDK-2.4.22.jar`
 - `target/lib/*.jar`
 
 ## Getting Started
@@ -84,8 +84,8 @@ Please follow the [installation](#installation) instruction and execute the foll
 
 import Avalara.SDK.*;
 import Avalara.SDK.auth.*;
-import org.openapitools.client.model.*;
-import org.openapitools.client.api.AgeVerificationApi;
+import Avalara.SDK.model.*;
+import Avalara.SDK.api.AgeVerificationApi;
 
 public class AgeVerificationApiExample {
 

@@ -6,7 +6,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Avalara Shipping Verification only
+ * Avalara Shipping Verification for Beverage Alcohol
  *
  * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta. 
  *
@@ -14,11 +14,11 @@
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.3.0
+ * @version    2.4.22
  * @link       https://github.com/avadev/AvaTax-REST-V3-JRE-SDK
  */
 
-package org.openapitools.client.api;
+package Avalara.SDK.api;
 
 import Avalara.SDK.ApiCallback;
 import Avalara.SDK.ApiClient;
@@ -34,9 +34,9 @@ import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 
 
-import org.openapitools.client.model.AgeVerifyFailureCode;
-import org.openapitools.client.model.AgeVerifyRequest;
-import org.openapitools.client.model.AgeVerifyResult;
+import Avalara.SDK.model.AgeVerifyFailureCode;
+import Avalara.SDK.model.AgeVerifyRequest;
+import Avalara.SDK.model.AgeVerifyResult;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

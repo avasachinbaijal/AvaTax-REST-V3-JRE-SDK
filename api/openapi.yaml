@@ -4,8 +4,8 @@ info:
     API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.
 
     This API is currently in beta.
-  title: Avalara Shipping Verification only
-  version: 3.1.0
+  title: Avalara Shipping Verification for Beverage Alcohol
+  version: 2.1.0-beta
 servers:
 - url: /
 security:
