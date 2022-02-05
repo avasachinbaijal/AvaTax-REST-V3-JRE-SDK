@@ -1,8 +1,8 @@
 lazy val root = (project in file(".")).
   settings(
-    organization := "org.openapitools",
-    name := "openapi-java-client",
-    version := "2.3.0",
+    organization := "Avalara.SDK",
+    name := "Avalara.SDK",
+    version := "2.4.22",
     scalaVersion := "2.11.4",
     scalacOptions ++= Seq("-feature"),
     javacOptions in compile ++= Seq("-Xlint:deprecation"),
