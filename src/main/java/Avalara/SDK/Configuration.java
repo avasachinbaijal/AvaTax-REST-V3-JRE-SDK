@@ -6,7 +6,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Avalara Shipping Verification for Beverage Alcohol
+ * Avalara Shipping Verification only
  *
  * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta. 
  *
@@ -14,7 +14,7 @@
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.4.22
+ * @version    2.4.22-beta
  * @link       https://github.com/avadev/AvaTax-REST-V3-JRE-SDK
  */
 
@@ -174,7 +174,7 @@ public class Configuration {
     /**
      * Gets the SdkVersion - this value is auto-generated.
      */
-    private String SdkVersion = "2.4.22";
+    private String SdkVersion = "2.4.22-beta";
 
     public String getSdkVersion() {
         return SdkVersion;
