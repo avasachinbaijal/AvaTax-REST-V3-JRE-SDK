@@ -1,8 +1,8 @@
 # Avalara.SDK
 
-Avalara Shipping Verification for Beverage Alcohol
+Avalara Shipping Verification only
 
-- API version: 2.1.0-beta
+- API version: 3.1.0
 
 API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.
 
@@ -43,7 +43,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>Avalara.SDK</groupId>
   <artifactId>Avalara.SDK</artifactId>
-  <version>2.4.22</version>
+  <version>2.4.23</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -59,7 +59,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "Avalara.SDK:Avalara.SDK:2.4.22"
+     implementation "Avalara.SDK:Avalara.SDK:2.4.23"
   }
 ```
 
@@ -73,7 +73,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-- `target/Avalara.SDK-2.4.22.jar`
+- `target/Avalara.SDK-2.4.23.jar`
 - `target/lib/*.jar`
 
 ## Getting Started
