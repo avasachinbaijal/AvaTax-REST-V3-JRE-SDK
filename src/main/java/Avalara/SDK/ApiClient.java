@@ -273,7 +273,7 @@ public class ApiClient {
      * <p>Setter for the field <code>dateFormat</code>.</p>
      *
      * @param dateFormat a {@link java.text.DateFormat} object
-     * @return a {@link org.openapitools.client.ApiClient} object
+     * @return a {@link ApiClient} object
      */
     public ApiClient setDateFormat(DateFormat dateFormat) {
         this.json.setDateFormat(dateFormat);
@@ -284,7 +284,7 @@ public class ApiClient {
      * <p>Set SqlDateFormat.</p>
      *
      * @param dateFormat a {@link java.text.DateFormat} object
-     * @return a {@link org.openapitools.client.ApiClient} object
+     * @return a {@link ApiClient} object
      */
     public ApiClient setSqlDateFormat(DateFormat dateFormat) {
         this.json.setSqlDateFormat(dateFormat);
@@ -295,7 +295,7 @@ public class ApiClient {
      * <p>Set OffsetDateTimeFormat.</p>
      *
      * @param dateFormat a {@link org.threeten.bp.format.DateTimeFormatter} object
-     * @return a {@link org.openapitools.client.ApiClient} object
+     * @return a {@link ApiClient} object
      */
     public ApiClient setOffsetDateTimeFormat(DateTimeFormatter dateFormat) {
         this.json.setOffsetDateTimeFormat(dateFormat);
@@ -306,7 +306,7 @@ public class ApiClient {
      * <p>Set LocalDateFormat.</p>
      *
      * @param dateFormat a {@link org.threeten.bp.format.DateTimeFormatter} object
-     * @return a {@link org.openapitools.client.ApiClient} object
+     * @return a {@link ApiClient} object
      */
     public ApiClient setLocalDateFormat(DateTimeFormatter dateFormat) {
         this.json.setLocalDateFormat(dateFormat);
@@ -317,7 +317,7 @@ public class ApiClient {
      * <p>Set LenientOnJson.</p>
      *
      * @param lenientOnJson a boolean
-     * @return a {@link org.openapitools.client.ApiClient} object
+     * @return a {@link ApiClient} object
      */
     public ApiClient setLenientOnJson(boolean lenientOnJson) {
         this.json.setLenientOnJson(lenientOnJson);
