@@ -335,4 +335,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spotless.version>2.17.3</spotless.version>
     </properties>
+    <distributionManagement>
+	    <repository>
+	      <id>ossrh</id>
+	      <name>Central Repository OSSRH</name>
+	      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+	    </repository>
+    </distributionManagement>	
 </project>
