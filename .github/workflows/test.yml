@@ -11,6 +11,7 @@ jobs:
     steps:
       - name: Install ca-certificates
         run: |
+          cd ~        
           sudo apt-get update 
           apt-get install ca-certificates
       - uses: actions/checkout@v2
