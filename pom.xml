@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>Avalara.SDK</groupId>
+    <groupId>io.github.avasachinbaijal</groupId>
     <artifactId>Avalara.SDK</artifactId>
     <packaging>jar</packaging>
     <name>Avalara.SDK</name>
@@ -9,14 +9,14 @@
     <url>https://github.com/avasachinbaijal/AvaTax-REST-V3-JRE-SDK</url>
     <description>OpenAPI Java</description>
     <scm>
-        <connection>git@github.com:avasachinbaijal/AvaTax-REST-V3-JRE-SDK.git</connection>
-        <developerConnection>git@github.com:avasachinbaijal/AvaTax-REST-V3-JRE-SDK.git</developerConnection>
+        <connection>scm:git@github.com:avasachinbaijal/AvaTax-REST-V3-JRE-SDK.git</connection>
+        <developerConnection>scm:git@github.com:avasachinbaijal/AvaTax-REST-V3-JRE-SDK.git</developerConnection>
         <url>https://github.com/avasachinbaijal/AvaTax-REST-V3-JRE-SDK</url>
     </scm>
 
     <licenses>
         <license>
-            <name>Unlicense</name>
+            <name>Apache License</name>
             <url>http://unlicense.org</url>
             <distribution>repo</distribution>
         </license>
@@ -31,8 +31,12 @@
         </developer>
     </developers>
 
-    <build>
-        <plugins>
+    <organization>
+     <name>Avalara</name>
+     <url>https://developer.avalara.com/</url>
+    </organization>
+	<build>
+        <plugins>			
            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
