@@ -19,3 +19,19 @@ jobs:
           server-password: MAVEN_PASSWORD
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots verify
+      - id: install-secret-key
+        name: Install gpg secret key
+        run: |
+         cat <(echo -e "$") | gpg --batch --import
+         gpg --list-secret-keys --keyid-format LONG
+      - id: publish-to-central
+        name: Publish to Central Repository
+        env:
+          MAVEN_USERNAME: $
+          MAVEN_PASSWORD: $
+        run: |
+          mvn \
+            --no-transfer-progress \
+            --batch-mode \
+            -Dgpg.passphrase=$ \
+            clean deploy
