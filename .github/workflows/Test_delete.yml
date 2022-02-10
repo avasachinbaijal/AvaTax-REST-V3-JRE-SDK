@@ -13,7 +13,7 @@ jobs:
     #if: "contains(github.event.head_commit.message, 'PUBLISH')"
     strategy:
       matrix:
-        java-version: [8, 11, 16]
+        java-version: [16]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -71,8 +71,8 @@ jobs:
             sudo apt install gnupg
             sudo apt-get update
             sudo apt-get install ca-certificates
-            wget https://download.docker.com/linux/ubuntu/gpg
-            apt-key add gpg
+            sudo wget https://download.docker.com/linux/ubuntu/gpg
+            sudo apt-key add gpg
         
       - name: Install GPG secret key
         run: echo "${{ secrets.OSSRH_GPG_SECRET_KEY }}" | gpg --batch --import
