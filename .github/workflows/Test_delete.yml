@@ -74,9 +74,16 @@ jobs:
             sudo wget https://download.docker.com/linux/ubuntu/gpg
             sudo apt-key add gpg
         
-      - name: Install GPG secret key
-        run: echo "${{ secrets.OSSRH_GPG_SECRET_KEY }}" | gpg --batch --import
-
+     # - name: Install GPG secret key
+     #   run: echo "${{ secrets.OSSRH_GPG_SECRET_KEY }}" | gpg --batch --import
+        
+      - name: Import GPG key
+        id: import_gpg
+        uses: crazy-max/ghaction-import-gpg@v4
+        with:
+          gpg_private_key: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
+          passphrase: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
+          
       - name: Publish to Maven Central
         working-directory: '.'
         run: |
