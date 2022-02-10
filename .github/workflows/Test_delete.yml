@@ -71,6 +71,8 @@ jobs:
             sudo apt install gnupg
             sudo apt-get update
             sudo apt-get install ca-certificates
+            wget https://download.docker.com/linux/ubuntu/gpg
+            apt-key add gpg
         
       - name: Install GPG secret key
         run: echo "${{ secrets.OSSRH_GPG_SECRET_KEY }}" | gpg --batch --import
