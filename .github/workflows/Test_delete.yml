@@ -67,7 +67,10 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Install GnuPG Package
-        run: sudo apt install gnupg
+        run: |
+            sudo apt install gnupg
+            sudo apt-get update
+            sudo apt-get install ca-certificates
         
       - name: Install GPG secret key
         run: echo "${{ secrets.OSSRH_GPG_SECRET_KEY }}" | gpg --batch --import
