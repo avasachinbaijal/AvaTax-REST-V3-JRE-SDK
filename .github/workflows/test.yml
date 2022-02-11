@@ -27,12 +27,19 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Install GPG secret key
-        run: echo "${{ secrets.OSSRH_GPG_SECRET_KEY }}" | gpg --batch --import
+        run: cat <(echo -e "${{ secrets.OSSRH_GPG_SECRET_KEY }}") | gpg --batch --import
         
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots verify
-      - name: Publish package
-        run: mvn --batch-mode deploy
+      - name: Publish to Maven Central
+        run: |
+          mvn \
+            --no-transfer-progress \
+            --batch-mode \
+            -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }} \
+            -DskipTests \
+            -Prelease \
+            deploy
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
