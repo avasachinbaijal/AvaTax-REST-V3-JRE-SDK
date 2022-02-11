@@ -75,7 +75,7 @@ jobs:
             sudo apt-key add gpg
         
       - name: Install GPG secret key
-        run: echo "${{ secrets.OSSRH_GPG_SECRET_KEY }}" | gpg --import
+        run: echo "${{ secrets.OSSRH_GPG_SECRET_KEY }}" | gpg --batch --import
         
     #  - name: Import GPG key
      #   id: import_gpg
