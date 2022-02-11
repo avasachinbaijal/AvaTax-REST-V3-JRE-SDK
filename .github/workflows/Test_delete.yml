@@ -66,18 +66,19 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Install GnuPG Package
-        run: |
-            sudo apt install gnupg
-            sudo apt-get update
-            sudo apt-get install ca-certificates
-            sudo wget https://download.docker.com/linux/ubuntu/gpg
-            sudo apt-key add gpg
-        
       - name: Install GPG secret key
         run: |
           cat <(echo -e "${{ secrets.OSSRH_GPG_SECRET_KEY }}") | gpg --batch --import
- 
+           mvn \
+            --no-transfer-progress \
+            --batch-mode \
+            -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }} \
+            -DskipTests \
+            -Prelease \
+            deploy
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
           
       - name: Publish to Maven Central
         working-directory: '.'
