@@ -77,14 +77,7 @@ jobs:
       - name: Install GPG secret key
         run: |
           cat <(echo -e "${{ secrets.OSSRH_GPG_SECRET_KEY }}") | gpg --batch --import
-          #gpg --list-secret-keys --keyid-format LONG
-        
-     #  - name: Import GPG key
-     #   id: import_gpg
-     #   uses: crazy-max/ghaction-import-gpg@v4
-     #   with:
-     #     gpg_private_key: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
-     #     passphrase: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
+ 
           
       - name: Publish to Maven Central
         working-directory: '.'
