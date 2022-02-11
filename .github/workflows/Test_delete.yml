@@ -79,7 +79,7 @@ jobs:
           cat <(echo -e "${{ secrets.OSSRH_GPG_SECRET_KEY }}") | gpg --batch --import
           #gpg --list-secret-keys --keyid-format LONG
         
-    #  - name: Import GPG key
+     #  - name: Import GPG key
      #   id: import_gpg
      #   uses: crazy-max/ghaction-import-gpg@v4
      #   with:
