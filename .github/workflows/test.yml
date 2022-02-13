@@ -24,16 +24,4 @@ jobs:
         
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots verify
-      - name: Publish to Maven Central
-        run: |
-          mvn \
-            --no-transfer-progress \
-            --batch-mode \
-            -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }} \
-            -DskipTests \
-            -Prelease \
-            deploy
-        env:
-          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
    
