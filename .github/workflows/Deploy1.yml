@@ -1,30 +1,38 @@
-name: Deploy1
+name: Java - Publish to Sonatype Repo
+
 on: 
   workflow_dispatch:
-  
+
+
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Java for publishing to Maven Central Repository
-        uses: actions/setup-java@v1
+      - name: Set up Maven Central Repository 
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.8
+          java-version: '11'
+          distribution: 'adopt'
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
-          gpg-private-key: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
-      - name: build artifact
-        run: mvn clean package
-      - name: Publish to the Maven Central Repository
+          
+      - name: Install GPG secret key
+        run: cat <(echo -e "${{ secrets.OSSRH_GPG_SECRET_KEY }}") | gpg --batch --import
+        
+      - name: Build with Maven
+        run: mvn --batch-mode --update-snapshots verify
+      - name: Publish to Maven Central
         run: |
           mvn \
             --no-transfer-progress \
             --batch-mode \
+            -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }} \
+            -DskipTests \
+            -Prelease \
             deploy
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
