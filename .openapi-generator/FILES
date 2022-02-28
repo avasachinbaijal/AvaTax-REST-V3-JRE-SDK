@@ -51,14 +51,3 @@ src/main/java/Avalara/SDK/model/ErrorDetailsError.java
 src/main/java/Avalara/SDK/model/ErrorDetailsErrorDetails.java
 src/main/java/Avalara/SDK/model/ShippingVerifyResult.java
 src/main/java/Avalara/SDK/model/ShippingVerifyResultLines.java
-src/test/java/Avalara/SDK/api/AgeVerificationApiTest.java
-src/test/java/Avalara/SDK/api/ShippingVerificationApiTest.java
-src/test/java/Avalara/SDK/model/AgeVerifyFailureCodeTest.java
-src/test/java/Avalara/SDK/model/AgeVerifyRequestAddressTest.java
-src/test/java/Avalara/SDK/model/AgeVerifyRequestTest.java
-src/test/java/Avalara/SDK/model/AgeVerifyResultTest.java
-src/test/java/Avalara/SDK/model/ErrorDetailsErrorDetailsTest.java
-src/test/java/Avalara/SDK/model/ErrorDetailsErrorTest.java
-src/test/java/Avalara/SDK/model/ErrorDetailsTest.java
-src/test/java/Avalara/SDK/model/ShippingVerifyResultLinesTest.java
-src/test/java/Avalara/SDK/model/ShippingVerifyResultTest.java
