@@ -1,22 +1,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>io.github.avasachinbaijal</groupId>
+    <groupId>Avalara.SDK</groupId>
     <artifactId>Avalara.SDK</artifactId>
     <packaging>jar</packaging>
     <name>Avalara.SDK</name>
-    <version>2.4.22</version>
+    <version>2.4.26</version>
     <url>https://github.com/avasachinbaijal/AvaTax-REST-V3-JRE-SDK</url>
     <description>OpenAPI Java</description>
     <scm>
-        <connection>scm:git@github.com:avasachinbaijal/AvaTax-REST-V3-JRE-SDK.git</connection>
-        <developerConnection>scm:git@github.com:avasachinbaijal/AvaTax-REST-V3-JRE-SDK.git</developerConnection>
+        <connection>git@github.com:avasachinbaijal/AvaTax-REST-V3-JRE-SDK.git</connection>
+        <developerConnection>git@github.com:avasachinbaijal/AvaTax-REST-V3-JRE-SDK.git</developerConnection>
         <url>https://github.com/avasachinbaijal/AvaTax-REST-V3-JRE-SDK</url>
     </scm>
 
     <licenses>
         <license>
-            <name>Apache License</name>
+            <name>Unlicense</name>
             <url>http://unlicense.org</url>
             <distribution>repo</distribution>
         </license>
@@ -31,12 +31,8 @@
         </developer>
     </developers>
 
-    <organization>
-     <name>Avalara</name>
-     <url>https://developer.avalara.com/</url>
-    </organization>
-	<build>
-        <plugins>			
+    <build>
+        <plugins>
            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -225,37 +221,6 @@
                 </java>
               </configuration>
             </plugin>
-            <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <version>3.0.1</version>
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-                <configuration>
-                  <gpgArguments>
-                    <arg>--pinentry-mode</arg>
-                    <arg>loopback</arg>
-                  </gpgArguments>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.sonatype.plugins</groupId>
-            <artifactId>nexus-staging-maven-plugin</artifactId>
-            <version>1.6.8</version>
-            <extensions>true</extensions>
-            <configuration>
-              <serverId>ossrh</serverId>
-              <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-	      <autoReleaseAfterClose>false</autoReleaseAfterClose>
-            </configuration>
-          </plugin>
         </plugins>
     </build>
 
@@ -275,87 +240,12 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
-                                <configuration>
-                                    <gpgArguments>
-                                        <arg>--pinentry-mode</arg>
-                                        <arg>loopback</arg>
-                                    </gpgArguments>
-                                    </configuration>
                             </execution>
-                        </executions>						
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
         </profile>
-        <profile>
-      <id>release</id>
-      <activation>
-        <property>
-          <name>release</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-source-plugin</artifactId>
-            <version>3.2.1</version>
-            <executions>
-              <execution>
-                <id>attach-sources</id>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>3.2.0</version>
-            <executions>
-              <execution>
-                <id>attach-javadocs</id>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.6</version>
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-                <configuration>
-                  <gpgArguments>
-                    <arg>--pinentry-mode</arg>
-                    <arg>loopback</arg>
-                  </gpgArguments>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.sonatype.plugins</groupId>
-            <artifactId>nexus-staging-maven-plugin</artifactId>
-            <version>1.6.8</version>
-            <extensions>true</extensions>
-            <configuration>
-              <serverId>ossrh</serverId>
-              <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-	      <autoReleaseAfterClose>false</autoReleaseAfterClose>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
     </profiles>
 
     <dependencies>
@@ -441,11 +331,4 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spotless.version>2.17.3</spotless.version>
     </properties>
-    <distributionManagement>
-	    <repository>
-	      <id>ossrh</id>
-	      <name>Central Repository OSSRH</name>
-	      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-	    </repository>
-    </distributionManagement>	
 </project>
