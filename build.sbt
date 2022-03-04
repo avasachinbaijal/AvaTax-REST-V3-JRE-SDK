@@ -2,7 +2,7 @@ lazy val root = (project in file(".")).
   settings(
     organization := "Avalara.SDK",
     name := "Avalara.SDK",
-    version := "2.4.27",
+    version := "2.4.29",
     scalaVersion := "2.11.4",
     scalacOptions ++= Seq("-feature"),
     javacOptions in compile ++= Seq("-Xlint:deprecation"),
