@@ -20,12 +20,11 @@ The request must meet the following criteria in order to be evaluated: * *firstN
 
 ```java
 // Import classes:
+
 import Avalara.SDK.ApiClient;
 import Avalara.SDK.ApiException;
 import Avalara.SDK.Configuration;
-import Avalara.SDK.auth.*;
 import Avalara.SDK.models.*;
-import Avalara.SDK.api.AgeVerificationApi;
 
 public class Example {
     public static void main(String[] args) {
@@ -40,7 +39,7 @@ public class Example {
         configuration.setPassword("YOUR PASSWORD");
         // Configure OAuth2 access token for authorization
         configuration.setAccessToken("YOUR ACCESS TOKEN");
-        
+
         ApiClient apiClient = new ApiClient(configuration);
 
         AgeVerificationApi apiInstance = new AgeVerificationApi(apiClient);

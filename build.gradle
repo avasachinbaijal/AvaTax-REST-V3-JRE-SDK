@@ -4,7 +4,7 @@ apply plugin: 'java'
 apply plugin: 'com.diffplug.spotless'
 
 group = 'Avalara.SDK'
-version = '2.4.27'
+version = '2.4.29'
 
 buildscript {
     repositories {

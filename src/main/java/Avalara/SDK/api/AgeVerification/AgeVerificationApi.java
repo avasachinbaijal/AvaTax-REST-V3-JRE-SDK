@@ -14,11 +14,11 @@
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.4.27
+ * @version    2.4.29
  * @link       https://github.com/avadev/AvaTax-REST-V3-JRE-SDK
  */
 
-package Avalara.SDK.api;
+package Avalara.SDK.api.AgeVerification;
 
 import Avalara.SDK.ApiCallback;
 import Avalara.SDK.ApiClient;
@@ -34,9 +34,9 @@ import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 
 
-import Avalara.SDK.model.AgeVerifyFailureCode;
-import Avalara.SDK.model.AgeVerifyRequest;
-import Avalara.SDK.model.AgeVerifyResult;
+import Avalara.SDK.model.AgeVerification.AgeVerifyFailureCode;
+import Avalara.SDK.model.AgeVerification.AgeVerifyRequest;
+import Avalara.SDK.model.AgeVerification.AgeVerifyResult;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

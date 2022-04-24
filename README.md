@@ -41,7 +41,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>Avalara.SDK</groupId>
   <artifactId>Avalara.SDK</artifactId>
-  <version>2.4.27</version>
+  <version>2.4.29</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -57,7 +57,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "Avalara.SDK:Avalara.SDK:2.4.27"
+     implementation "Avalara.SDK:Avalara.SDK:2.4.29"
   }
 ```
 
@@ -71,7 +71,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-- `target/Avalara.SDK-2.4.27.jar`
+- `target/Avalara.SDK-2.4.29.jar`
 - `target/lib/*.jar`
 
 ## Getting Started
@@ -81,9 +81,7 @@ Please follow the [installation](#installation) instruction and execute the foll
 ```java
 
 import Avalara.SDK.*;
-import Avalara.SDK.auth.*;
 import Avalara.SDK.model.*;
-import Avalara.SDK.api.AgeVerificationApi;
 
 public class AgeVerificationApiExample {
 
@@ -99,7 +97,7 @@ public class AgeVerificationApiExample {
         configuration.setPassword("YOUR PASSWORD");
         // Configure OAuth2 access token for authorization
         configuration.setAccessToken("YOUR ACCESS TOKEN");
-        
+
         ApiClient apiClient = new ApiClient(configuration);
         AgeVerificationApi apiInstance = new AgeVerificationApi(apiClient);
         AgeVerifyRequest ageVerifyRequest = new AgeVerifyRequest(); // AgeVerifyRequest | Information about the individual whose age is being verified.

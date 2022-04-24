@@ -24,22 +24,15 @@ import Avalara.SDK.ApiClient;
 import Avalara.SDK.ApiException;
 import Avalara.SDK.AvaTaxEnvironment;
 import Avalara.SDK.Configuration;
-import Avalara.SDK.model.ErrorDetails;
-import Avalara.SDK.model.ShippingVerifyResult;
 import org.junit.Test;
 import org.junit.Ignore;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * API tests for ShippingVerificationApi
  */
 @Ignore
 public class ShippingVerificationApiTest {
-    private ShippingVerificationApi api;
+    private Avalara.SDK.api.Shipping.ShippingVerificationApi api;
 
     public ShippingVerificationApiTest() {
         Configuration configuration = new Configuration();
@@ -52,7 +45,7 @@ public class ShippingVerificationApiTest {
         configuration.setTimeout(5000);
         configuration.setEnvironment(AvaTaxEnvironment.Sandbox);
         ApiClient apiClient = new ApiClient(configuration);
-        api = new ShippingVerificationApi(apiClient);
+        api = new Avalara.SDK.api.Shipping.ShippingVerificationApi(apiClient);
     }
 
     
@@ -103,7 +96,7 @@ public class ShippingVerificationApiTest {
         String companyCode = null;
         String transactionCode = null;
         String documentType = null;
-                ShippingVerifyResult response = api.registerShipmentIfCompliant(companyCode, transactionCode, documentType);
+        Avalara.SDK.model.Shipping.ShippingVerifyResult response = api.registerShipmentIfCompliant(companyCode, transactionCode, documentType);
         // TODO: test validations
     }
     
@@ -120,7 +113,7 @@ public class ShippingVerificationApiTest {
         String companyCode = null;
         String transactionCode = null;
         String documentType = null;
-                ShippingVerifyResult response = api.verifyShipment(companyCode, transactionCode, documentType);
+        Avalara.SDK.model.Shipping.ShippingVerifyResult response = api.verifyShipment(companyCode, transactionCode, documentType);
         // TODO: test validations
     }
     

@@ -21,12 +21,11 @@ Removes the transaction from consideration when evaluating regulations that span
 
 ```java
 // Import classes:
+
 import Avalara.SDK.ApiClient;
 import Avalara.SDK.ApiException;
 import Avalara.SDK.Configuration;
-import Avalara.SDK.auth.*;
 import Avalara.SDK.models.*;
-import Avalara.SDK.api.ShippingVerificationApi;
 
 public class Example {
     public static void main(String[] args) {
@@ -41,7 +40,7 @@ public class Example {
         configuration.setPassword("YOUR PASSWORD");
         // Configure OAuth2 access token for authorization
         configuration.setAccessToken("YOUR ACCESS TOKEN");
-        
+
         ApiClient apiClient = new ApiClient(configuration);
 
         ShippingVerificationApi apiInstance = new ShippingVerificationApi(apiClient);
@@ -104,12 +103,11 @@ Registers the transaction so that it may be included when evaluating regulations
 
 ```java
 // Import classes:
+
 import Avalara.SDK.ApiClient;
 import Avalara.SDK.ApiException;
 import Avalara.SDK.Configuration;
-import Avalara.SDK.auth.*;
 import Avalara.SDK.models.*;
-import Avalara.SDK.api.ShippingVerificationApi;
 
 public class Example {
     public static void main(String[] args) {
@@ -124,7 +122,7 @@ public class Example {
         configuration.setPassword("YOUR PASSWORD");
         // Configure OAuth2 access token for authorization
         configuration.setAccessToken("YOUR ACCESS TOKEN");
-        
+
         ApiClient apiClient = new ApiClient(configuration);
 
         ShippingVerificationApi apiInstance = new ShippingVerificationApi(apiClient);
@@ -187,12 +185,11 @@ Evaluates a transaction against a set of direct-to-consumer shipping regulations
 
 ```java
 // Import classes:
+
 import Avalara.SDK.ApiClient;
 import Avalara.SDK.ApiException;
 import Avalara.SDK.Configuration;
-import Avalara.SDK.auth.*;
 import Avalara.SDK.models.*;
-import Avalara.SDK.api.ShippingVerificationApi;
 
 public class Example {
     public static void main(String[] args) {
@@ -207,7 +204,7 @@ public class Example {
         configuration.setPassword("YOUR PASSWORD");
         // Configure OAuth2 access token for authorization
         configuration.setAccessToken("YOUR ACCESS TOKEN");
-        
+
         ApiClient apiClient = new ApiClient(configuration);
 
         ShippingVerificationApi apiInstance = new ShippingVerificationApi(apiClient);
@@ -273,12 +270,11 @@ The transaction and its lines must meet the following criteria in order to be ev
 
 ```java
 // Import classes:
+
 import Avalara.SDK.ApiClient;
 import Avalara.SDK.ApiException;
 import Avalara.SDK.Configuration;
-import Avalara.SDK.auth.*;
 import Avalara.SDK.models.*;
-import Avalara.SDK.api.ShippingVerificationApi;
 
 public class Example {
     public static void main(String[] args) {
@@ -293,7 +289,7 @@ public class Example {
         configuration.setPassword("YOUR PASSWORD");
         // Configure OAuth2 access token for authorization
         configuration.setAccessToken("YOUR ACCESS TOKEN");
-        
+
         ApiClient apiClient = new ApiClient(configuration);
 
         ShippingVerificationApi apiInstance = new ShippingVerificationApi(apiClient);

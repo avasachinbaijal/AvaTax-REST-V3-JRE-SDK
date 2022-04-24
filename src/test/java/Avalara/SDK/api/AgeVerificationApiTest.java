@@ -21,19 +21,13 @@
 package Avalara.SDK.api;
 
 import Avalara.SDK.ApiClient;
+import  Avalara.SDK.api.AgeVerification.AgeVerificationApi;
 import Avalara.SDK.ApiException;
 import Avalara.SDK.AvaTaxEnvironment;
 import Avalara.SDK.Configuration;
-import Avalara.SDK.model.AgeVerifyFailureCode;
-import Avalara.SDK.model.AgeVerifyRequest;
-import Avalara.SDK.model.AgeVerifyResult;
+import jdk.internal.access.JavaLangRefAccess;
 import org.junit.Test;
 import org.junit.Ignore;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * API tests for AgeVerificationApi
@@ -67,9 +61,9 @@ public class AgeVerificationApiTest {
      */
     @Test
     public void verifyAgeTest() throws ApiException {
-        AgeVerifyRequest ageVerifyRequest = null;
-        AgeVerifyFailureCode simulatedFailureCode = null;
-                AgeVerifyResult response = api.verifyAge(ageVerifyRequest, simulatedFailureCode);
+        Avalara.SDK.model.AgeVerification.AgeVerifyRequest ageVerifyRequest = null;
+        Avalara.SDK.model.AgeVerification.AgeVerifyFailureCode simulatedFailureCode = null;
+        Avalara.SDK.model.AgeVerification.AgeVerifyResult response = api.verifyAge(ageVerifyRequest, simulatedFailureCode);
         // TODO: test validations
     }
     
