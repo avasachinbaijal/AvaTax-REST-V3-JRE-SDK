@@ -25,7 +25,6 @@ import  Avalara.SDK.api.AgeVerification.AgeVerificationApi;
 import Avalara.SDK.ApiException;
 import Avalara.SDK.AvaTaxEnvironment;
 import Avalara.SDK.Configuration;
-import jdk.internal.access.JavaLangRefAccess;
 import org.junit.Test;
 import org.junit.Ignore;
 
