@@ -20,6 +20,7 @@
 
 package Avalara.SDK.model;
 
+import Avalara.SDK.model.Shipping.ErrorDetailsError;
 import org.junit.Test;
 
 

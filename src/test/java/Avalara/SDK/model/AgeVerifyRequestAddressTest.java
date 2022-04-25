@@ -20,6 +20,7 @@
 
 package Avalara.SDK.model;
 
+import Avalara.SDK.model.AgeVerification.AgeVerifyRequestAddress;
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;

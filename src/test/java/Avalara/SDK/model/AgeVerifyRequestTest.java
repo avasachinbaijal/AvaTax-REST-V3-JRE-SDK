@@ -20,6 +20,7 @@
 
 package Avalara.SDK.model;
 
+import Avalara.SDK.model.AgeVerification.AgeVerifyRequest;
 import org.junit.Test;
 
 
