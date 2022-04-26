@@ -34,7 +34,8 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.OffsetDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
 
-import Avalara.SDK.model.*;
+import Avalara.SDK.model.AgeVerification.*;
+import Avalara.SDK.model.Shipping.*;
 import okio.ByteString;
 
 import java.io.IOException;
