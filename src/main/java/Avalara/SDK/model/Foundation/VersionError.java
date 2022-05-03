@@ -6,9 +6,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Avalara Shipping Verification only
+ * foundation
  *
- * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta. 
+ * Platform foundation consists of services on top of which the Avalara Compliance Cloud platform is built. These services are foundational and provide functionality such as common organization, account and user management for the rest of the compliance platform.
  *
  * @author     Sachin Baijal <sachin.baijal@avalara.com>
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
@@ -18,7 +18,7 @@
  * @link       https://github.com/avadev/AvaTax-REST-V3-JRE-SDK
  */
 
-package Avalara.SDK.model.AgeVerification;
+package Avalara.SDK.model.Foundation;
 
 import java.util.Objects;
 import java.util.Arrays;
@@ -31,26 +31,20 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 /**
- * Gets or Sets AgeVerifyFailureCode
+ * Gets or Sets VersionError
  */
-@JsonAdapter(AgeVerifyFailureCode.Adapter.class)
-public enum AgeVerifyFailureCode {
+@JsonAdapter(VersionError.Adapter.class)
+public enum VersionError {
   
-  NOT_FOUND("not_found"),
+  TOO_NEW("version-too-new"),
   
-  DOB_UNVERIFIABLE("dob_unverifiable"),
+  TOO_OLD("version-too-old"),
   
-  UNDER_AGE("under_age"),
-  
-  SUSPECTED_FRAUD("suspected_fraud"),
-  
-  DECEASED("deceased"),
-  
-  UNKNOWN_ERROR("unknown_error");
+  NOT_VALID("version-not-valid");
 
   private String value;
 
-  AgeVerifyFailureCode(String value) {
+  VersionError(String value) {
     this.value = value;
   }
 
@@ -63,8 +57,8 @@ public enum AgeVerifyFailureCode {
     return String.valueOf(value);
   }
 
-  public static AgeVerifyFailureCode fromValue(String value) {
-    for (AgeVerifyFailureCode b : AgeVerifyFailureCode.values()) {
+  public static VersionError fromValue(String value) {
+    for (VersionError b : VersionError.values()) {
       if (b.value.equals(value)) {
         return b;
       }
@@ -72,16 +66,16 @@ public enum AgeVerifyFailureCode {
     throw new IllegalArgumentException("Unexpected value '" + value + "'");
   }
 
-  public static class Adapter extends TypeAdapter<AgeVerifyFailureCode> {
+  public static class Adapter extends TypeAdapter<VersionError> {
     @Override
-    public void write(final JsonWriter jsonWriter, final AgeVerifyFailureCode enumeration) throws IOException {
+    public void write(final JsonWriter jsonWriter, final VersionError enumeration) throws IOException {
       jsonWriter.value(enumeration.getValue());
     }
 
     @Override
-    public AgeVerifyFailureCode read(final JsonReader jsonReader) throws IOException {
+    public VersionError read(final JsonReader jsonReader) throws IOException {
       String value = jsonReader.nextString();
-      return AgeVerifyFailureCode.fromValue(value);
+      return VersionError.fromValue(value);
     }
   }
 }

@@ -6,9 +6,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Avalara Shipping Verification for Beverage Alcohol
+ * foundation
  *
- * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta. 
+ * Platform foundation consists of services on top of which the Avalara Compliance Cloud platform is built. These services are foundational and provide functionality such as common organization, account and user management for the rest of the compliance platform.
  *
  * @author     Sachin Baijal <sachin.baijal@avalara.com>
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
@@ -18,11 +18,10 @@
  * @link       https://github.com/avadev/AvaTax-REST-V3-JRE-SDK
  */
 
-package Avalara.SDK.model.Shipping;
+package Avalara.SDK.model.Foundation;
 
 import java.util.Objects;
 import java.util.Arrays;
-import Avalara.SDK.model.Shipping.ErrorDetailsError;
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
@@ -33,36 +32,63 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
 
 /**
- * Message Object
+ * Tags that can hold additional information about a resource
  */
-@ApiModel(description = "Message Object")
+@ApiModel(description = "Tags that can hold additional information about a resource")
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
-public class ErrorDetails {
-  public static final String SERIALIZED_NAME_ERROR = "error";
-  @SerializedName(SERIALIZED_NAME_ERROR)
-  private ErrorDetailsError error;
+public class Tag {
+  public static final String SERIALIZED_NAME_NAME = "name";
+  @SerializedName(SERIALIZED_NAME_NAME)
+  private String name;
+
+  public static final String SERIALIZED_NAME_VALUE = "value";
+  @SerializedName(SERIALIZED_NAME_VALUE)
+  private String value;
 
 
-  public ErrorDetails error(ErrorDetailsError error) {
+  public Tag name(String name) {
     
-    this.error = error;
+    this.name = name;
     return this;
   }
 
    /**
-   * Get error
-   * @return error
+   * Name of the tag
+   * @return name
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "Name of the tag")
 
-  public ErrorDetailsError getError() {
-    return error;
+  public String getName() {
+    return name;
   }
 
 
-  public void setError(ErrorDetailsError error) {
-    this.error = error;
+  public void setName(String name) {
+    this.name = name;
+  }
+
+
+  public Tag value(String value) {
+    
+    this.value = value;
+    return this;
+  }
+
+   /**
+   * User defined value
+   * @return value
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "User defined value")
+
+  public String getValue() {
+    return value;
+  }
+
+
+  public void setValue(String value) {
+    this.value = value;
   }
 
 
@@ -74,20 +100,22 @@ public class ErrorDetails {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ErrorDetails errorDetails = (ErrorDetails) o;
-    return Objects.equals(this.error, errorDetails.error);
+    Tag tag = (Tag) o;
+    return Objects.equals(this.name, tag.name) &&
+        Objects.equals(this.value, tag.value);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(error);
+    return Objects.hash(name, value);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class ErrorDetails {\n");
-    sb.append("    error: ").append(toIndentedString(error)).append("\n");
+    sb.append("class Tag {\n");
+    sb.append("    name: ").append(toIndentedString(name)).append("\n");
+    sb.append("    value: ").append(toIndentedString(value)).append("\n");
     sb.append("}");
     return sb.toString();
   }
