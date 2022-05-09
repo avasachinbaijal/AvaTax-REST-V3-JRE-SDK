@@ -48,6 +48,7 @@ public class AgeVerificationApi {
     private ApiClient localVarApiClient;
     private int localHostIndex;
     private String localCustomBaseUrl;
+    
 
     public AgeVerificationApi(ApiClient apiClient) {
         this.localVarApiClient = apiClient;
