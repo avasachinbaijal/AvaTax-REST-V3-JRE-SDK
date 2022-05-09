@@ -47,6 +47,7 @@ public class ShippingVerificationApi {
     private ApiClient localVarApiClient;
     private int localHostIndex;
     private String localCustomBaseUrl;
+    
 
     public ShippingVerificationApi(ApiClient apiClient) {
         this.localVarApiClient = apiClient;
