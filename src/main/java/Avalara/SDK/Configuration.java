@@ -6,15 +6,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Avalara Shipping Verification only
+ * IAMDS
  *
- * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta. 
+ * Platform IAMDS consists of services on top of which the Avalara Compliance Cloud platform is built. These services are foundational and provide functionality such as common organization, tenant and user management for the rest of the compliance platform.
  *
  * @author     Sachin Baijal <sachin.baijal@avalara.com>
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.4.29
+ * @version    2.4.33
  * @link       https://github.com/avadev/AvaTax-REST-V3-JRE-SDK
  */
 
@@ -144,14 +144,53 @@ public class Configuration {
     /**
      * Gets or sets the Test Url. Used for local developer testing.
      */
-    private String TestUrl;
+    private String TestBasePath;
 
-    public String getTestUrl() {
-        return TestUrl;
+    public String getTestBasePath() {
+        return TestBasePath;
     }
 
-    public void setTestUrl(String testUrl) {
-        TestUrl = testUrl;
+    public void setTestBasePath(String testBasePath) {
+        TestBasePath = testBasePath;
+    }
+
+    /**
+     * Gets or sets the Test Toke URL. Used for local developer testing for retrieving OAuth tokens.
+     */
+    private String TestTokenUrl;
+
+    public String getTestTokenUrl() {
+        return TestTokenUrl;
+    }
+
+    public void setTestTokenUrl(String testTokenUrl) {
+        TestTokenUrl = testTokenUrl;
+    }
+
+    /**
+     * Gets or sets the ClientId Used for OAuth2 Client Credentials flow.
+     */
+    private String ClientId;
+
+    public String getClientId() {
+        return ClientId;
+    }
+
+    public void setClientId(String clientId) {
+        ClientId = clientId;
+    }
+
+    /**
+     * Gets or sets the ClientSecret Used for OAuth2 Client Credentials flow.
+     */
+    private String ClientSecret;
+
+    public String getClientSecret() {
+        return ClientSecret;
+    }
+
+    public void setClientSecret(String clientSecret) {
+        ClientSecret = clientSecret;
     }
 
     /**
@@ -164,19 +203,10 @@ public class Configuration {
             case Sandbox:
                 return AVATAX_SANDBOX_URL;
             case Test:
-                if (this.getTestUrl() == null)
+                if (this.getTestBasePath() == null)
                     throw new NullPointerException("When Environment is set to 'Test', the Test URL is a required parameter.");
-                return this.getTestUrl();
+                return this.getTestBasePath();
         }
         throw new Error("Environment does not match any base path.");
-    }
-
-    /**
-     * Gets the SdkVersion - this value is auto-generated.
-     */
-    private String SdkVersion = "2.4.29";
-
-    public String getSdkVersion() {
-        return SdkVersion;
     }
 }
