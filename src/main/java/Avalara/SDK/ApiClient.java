@@ -13,6 +13,7 @@
 
 package Avalara.SDK;
 
+import Avalara.SDK.auth.*;
 import okhttp3.*;
 import okhttp3.internal.http.HttpMethod;
 import okhttp3.internal.tls.OkHostnameVerifier;
@@ -24,6 +25,8 @@ import okio.Okio;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.OffsetDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
+import org.apache.oltu.oauth2.client.request.OAuthClientRequest.TokenRequestBuilder;
+import org.apache.oltu.oauth2.common.message.types.GrantType;
 
 import javax.net.ssl.*;
 import java.io.File;
@@ -49,11 +52,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import Avalara.SDK.auth.Authentication;
-import Avalara.SDK.auth.HttpBasicAuth;
-import Avalara.SDK.auth.HttpBearerAuth;
-import Avalara.SDK.auth.ApiKeyAuth;
 
 /**
  * <p>ApiClient class.</p>
@@ -83,11 +81,16 @@ public class ApiClient {
 
     private HttpLoggingInterceptor loggingInterceptor;
     private Configuration configuration;
+    private String sdkVersion;
+
+    public void setSdkVersion(String version) {
+        this.sdkVersion = version;
+    }
 
     /**
      * Basic constructor for ApiClient
      */
-    public ApiClient(Configuration config) {
+    public ApiClient(Configuration config) throws Exception {
         if (config == null)
             throw new NullPointerException("Parameter 'config' cannot be null");
         if (config.getEnvironment() == null )
@@ -98,6 +101,17 @@ public class ApiClient {
         // Setup authentications (key: authentication name, value: authentication).
         authentications.put("BasicAuth", new HttpBasicAuth());
         authentications.put("Bearer", new ApiKeyAuth("header", "Authorization"));
+        if (config.getClientId() != null && config.getClientSecret() != null) {
+            String tokenUrl = getTokenUrl(config);
+            // Only supporting Client Credential flow for V1 (OAuthFlow.application)
+            RetryingOAuth retryingOAuth = new RetryingOAuth(tokenUrl, config.getClientId(), OAuthFlow.application, config.getClientSecret(), null);
+            authentications.put(
+                    "OAuth",
+                    retryingOAuth
+            );
+            initHttpClient(Collections.<Interceptor>singletonList(retryingOAuth));
+        }
+
         // Prevent the authentications from being modified.
         authentications = Collections.unmodifiableMap(authentications);
         // Set Authentication type based on Configuration passed into the ApiClient
@@ -106,7 +120,7 @@ public class ApiClient {
             this.setPassword(config.getPassword());
         }
         if (config.getAccessToken() != null) {
-            this.setAccessToken(config.getAccessToken());
+            this.setAccessToken("", config.getAccessToken());
         }
         // Instantiate config
         this.configuration = config;
@@ -409,10 +423,14 @@ public class ApiClient {
      *
      * @param accessToken Access token
      */
-    public void setAccessToken(String accessToken) {
+    public void setAccessToken(String scope, String accessToken) {
         for (Authentication auth : authentications.values()) {
             if (auth instanceof ApiKeyAuth) {
                 ((ApiKeyAuth) auth).setApiKey(accessToken);
+                return;
+            }
+			if (auth instanceof OAuth) {
+                ((OAuth) auth).setAccessToken(scope, accessToken);
                 return;
             }
         }
@@ -509,6 +527,23 @@ public class ApiClient {
         return this;
     }
 
+    public String getTokenUrl(Configuration config) throws Exception {
+        AvaTaxEnvironment env = config.getEnvironment();
+        switch (env) {
+            case Production:
+                return "https://avalara.identity/token";
+            case Sandbox:
+                return "https://avalara.identity.sandbox/token";
+            case Test:
+                String tokenUrl = config.getTestTokenUrl();
+                if (tokenUrl == null) {
+                    throw new Exception("When using the Test Environment, a tokenUrl must be specified for OAuth2 token retrieval.");
+                }
+                return tokenUrl;
+        }
+        return "";
+    }
+
     /**
      * Get connection timeout (in milliseconds).
      *
@@ -575,6 +610,20 @@ public class ApiClient {
         return this;
     }
 
+    /**
+     * Helper method to configure the token endpoint of the first oauth found in the apiAuthorizations (there should be only one)
+     *
+     * @return Token request builder
+     */
+    public TokenRequestBuilder getTokenEndPoint() {
+        for (Authentication apiAuth : authentications.values()) {
+            if (apiAuth instanceof RetryingOAuth) {
+                RetryingOAuth retryingOAuth = (RetryingOAuth) apiAuth;
+                return retryingOAuth.getTokenRequestBuilder();
+            }
+        }
+        return null;
+    }
 
     /**
      * Format the given parameter object into string.
@@ -1085,8 +1134,30 @@ public class ApiClient {
      * @return The HTTP call
      * @throws org.openapitools.client.ApiException If fail to serialize the request body object
      */
+    public Call buildCall(String baseUrl, String path, String method, List<Pair> queryParams, List<Pair> collectionQueryParams, Object body, Map<String, String> headerParams, Map<String, String> cookieParams, Map<String, Object> formParams, String[] authNames, ApiCallback callback, String scope) throws ApiException {
+        Request request = buildRequest(baseUrl, path, method, queryParams, collectionQueryParams, body, headerParams, cookieParams, formParams, authNames, callback, scope);
+
+        return httpClient.newCall(request);
+    }
+
+    /**
+     * Build HTTP call with the given options.
+     *
+     * @param path The sub-path of the HTTP URL
+     * @param method The request method, one of "GET", "HEAD", "OPTIONS", "POST", "PUT", "PATCH" and "DELETE"
+     * @param queryParams The query parameters
+     * @param collectionQueryParams The collection query parameters
+     * @param body The request body object
+     * @param headerParams The header parameters
+     * @param cookieParams The cookie parameters
+     * @param formParams The form parameters
+     * @param authNames The authentications to apply
+     * @param callback Callback for upload/download progress
+     * @return The HTTP call
+     * @throws org.openapitools.client.ApiException If fail to serialize the request body object
+     */
     public Call buildCall(String baseUrl, String path, String method, List<Pair> queryParams, List<Pair> collectionQueryParams, Object body, Map<String, String> headerParams, Map<String, String> cookieParams, Map<String, Object> formParams, String[] authNames, ApiCallback callback) throws ApiException {
-        Request request = buildRequest(baseUrl, path, method, queryParams, collectionQueryParams, body, headerParams, cookieParams, formParams, authNames, callback);
+        Request request = buildRequest(baseUrl, path, method, queryParams, collectionQueryParams, body, headerParams, cookieParams, formParams, authNames, callback, "");
 
         return httpClient.newCall(request);
     }
@@ -1107,7 +1178,7 @@ public class ApiClient {
      * @return The HTTP request
      * @throws org.openapitools.client.ApiException If fail to serialize the request body object
      */
-    public Request buildRequest(String baseUrl, String path, String method, List<Pair> queryParams, List<Pair> collectionQueryParams, Object body, Map<String, String> headerParams, Map<String, String> cookieParams, Map<String, Object> formParams, String[] authNames, ApiCallback callback) throws ApiException {
+    public Request buildRequest(String baseUrl, String path, String method, List<Pair> queryParams, List<Pair> collectionQueryParams, Object body, Map<String, String> headerParams, Map<String, String> cookieParams, Map<String, Object> formParams, String[] authNames, ApiCallback callback, String scope) throws ApiException {
         // aggregate queryParams (non-collection) and collectionQueryParams into allQueryParams
         List<Pair> allQueryParams = new ArrayList<Pair>(queryParams);
         allQueryParams.addAll(collectionQueryParams);
@@ -1119,7 +1190,7 @@ public class ApiClient {
         String contentType = headerParams.get("Content-Type");
 
         // Set X-Avalara-Client header
-        String clientId = this.configuration.getAppName() + "; " + this.configuration.getAppVersion() + "; JavaRestClient; " + this.configuration.getSdkVersion() + "; "
+        String clientId = this.configuration.getAppName() + "; " + this.configuration.getAppVersion() + "; JavaRestClient; " + this.sdkVersion + "; "
                 + this.configuration.getMachineName();
         headerParams.put(AVALARA_CLIENT_HEADER, clientId);
 
@@ -1151,6 +1222,8 @@ public class ApiClient {
         // Associate callback with request (if not null) so interceptor can
         // access it when creating ProgressResponseBody
         reqBuilder.tag(callback);
+        // Add the scopes to the request for OAuth2 support.
+        reqBuilder.tag(ScopeWrapper.class, new ScopeWrapper(scope));
 
         Request request = null;
 
@@ -1335,8 +1408,8 @@ public class ApiClient {
             public Response intercept(Interceptor.Chain chain) throws IOException {
                 final Request request = chain.request();
                 final Response originalResponse = chain.proceed(request);
-                if (request.tag() instanceof ApiCallback) {
-                    final ApiCallback callback = (ApiCallback) request.tag();
+                ApiCallback callback = request.tag(ApiCallback.class);
+                if (callback != null) {
                     return originalResponse.newBuilder()
                         .body(new ProgressResponseBody(originalResponse.body(), callback))
                         .build();

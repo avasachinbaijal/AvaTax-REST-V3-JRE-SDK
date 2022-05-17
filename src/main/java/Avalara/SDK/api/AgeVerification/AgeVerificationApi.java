@@ -14,7 +14,7 @@
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.4.32
+ * @version    2.4.33
  * @link       https://github.com/avadev/AvaTax-REST-V3-JRE-SDK
  */
 
@@ -32,6 +32,7 @@ import Avalara.SDK.ProgressResponseBody;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
+import java.util.*;
 
 
 import Avalara.SDK.model.AgeVerification.AgeVerifyFailureCode;
@@ -51,6 +52,7 @@ public class AgeVerificationApi {
 
     public AgeVerificationApi(ApiClient apiClient) {
         this.localVarApiClient = apiClient;
+        SetConfiguration(apiClient);
     }
 
     public ApiClient getApiClient() {
@@ -96,6 +98,9 @@ public class AgeVerificationApi {
         // Operation Servers
         String[] localBasePaths = new String[] {  };
 
+        //OAuth2 Scopes
+        String requiredScopes = "";
+
         // Determine Base Path to Use
         if (localCustomBaseUrl != null){
             basePath = localCustomBaseUrl;
@@ -135,9 +140,8 @@ public class AgeVerificationApi {
         if (localVarContentType != null) {
             localVarHeaderParams.put("Content-Type", localVarContentType);
         }
-
         String[] localVarAuthNames = new String[] { "BasicAuth", "Bearer" };
-        return localVarApiClient.buildCall(basePath, localVarPath, "POST", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
+        return localVarApiClient.buildCall(basePath, localVarPath, "POST", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback, requiredScopes);
     }
 
     @SuppressWarnings("rawtypes")
@@ -224,4 +228,9 @@ public class AgeVerificationApi {
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
     }
+    private void SetConfiguration(ApiClient client) {
+        if (client == null) throw new MissingFormatArgumentException("client");
+        this.localVarApiClient.setSdkVersion("2.4.33");
+    }
 }
+

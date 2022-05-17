@@ -45,8 +45,12 @@ public class AgeVerificationApiTest {
         configuration.setPassword("bar");
         configuration.setTimeout(5000);
         configuration.setEnvironment(AvaTaxEnvironment.Sandbox);
-        ApiClient apiClient = new ApiClient(configuration);
-        api = new AgeVerificationApi(apiClient);
+        try {
+            ApiClient apiClient = new ApiClient(configuration);
+            api = new AgeVerificationApi(apiClient);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 
     
