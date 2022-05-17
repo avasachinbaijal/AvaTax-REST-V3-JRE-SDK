@@ -44,8 +44,12 @@ public class ShippingVerificationApiTest {
         configuration.setPassword("bar");
         configuration.setTimeout(5000);
         configuration.setEnvironment(AvaTaxEnvironment.Sandbox);
-        ApiClient apiClient = new ApiClient(configuration);
-        api = new Avalara.SDK.api.Shipping.ShippingVerificationApi(apiClient);
+        try {
+            ApiClient apiClient = new ApiClient(configuration);
+            api = new Avalara.SDK.api.Shipping.ShippingVerificationApi(apiClient);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 
     
