@@ -6,9 +6,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Avalara Shipping Verification only
+ * foundation
  *
- * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta. 
+ * Platform foundation consists of services on top of which the Avalara Compliance Cloud platform is built. These services are foundational and provide functionality such as common organization, tenant and user management for the rest of the compliance platform.
  *
  * @author     Sachin Baijal <sachin.baijal@avalara.com>
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
@@ -18,11 +18,10 @@
  * @link       https://github.com/avadev/AvaTax-REST-V3-JRE-SDK
  */
 
-package Avalara.SDK.model.AgeVerification;
+package Avalara.SDK.model.IAMDS;
 
 import java.util.Objects;
 import java.util.Arrays;
-import Avalara.SDK.model.AgeVerification.AgeVerifyRequestAddress;
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
@@ -33,11 +32,11 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
 
 /**
- * The Request for the /ageVerification/verify endpoint. Describes information about the person whose age is being verified.
+ * Name of the contact
  */
-@ApiModel(description = "The Request for the /ageVerification/verify endpoint. Describes information about the person whose age is being verified.")
+@ApiModel(description = "Name of the contact")
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
-public class AgeVerifyRequest {
+public class ContactName {
   public static final String SERIALIZED_NAME_FIRST_NAME = "firstName";
   @SerializedName(SERIALIZED_NAME_FIRST_NAME)
   private String firstName;
@@ -46,27 +45,19 @@ public class AgeVerifyRequest {
   @SerializedName(SERIALIZED_NAME_LAST_NAME)
   private String lastName;
 
-  public static final String SERIALIZED_NAME_ADDRESS = "address";
-  @SerializedName(SERIALIZED_NAME_ADDRESS)
-  private AgeVerifyRequestAddress address;
 
-  public static final String SERIALIZED_NAME_D_O_B = "DOB";
-  @SerializedName(SERIALIZED_NAME_D_O_B)
-  private String DOB;
-
-
-  public AgeVerifyRequest firstName(String firstName) {
+  public ContactName firstName(String firstName) {
     
     this.firstName = firstName;
     return this;
   }
 
    /**
-   * Get firstName
+   * First Name
    * @return firstName
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "First Name")
 
   public String getFirstName() {
     return firstName;
@@ -78,18 +69,18 @@ public class AgeVerifyRequest {
   }
 
 
-  public AgeVerifyRequest lastName(String lastName) {
+  public ContactName lastName(String lastName) {
     
     this.lastName = lastName;
     return this;
   }
 
    /**
-   * Get lastName
+   * Last Name
    * @return lastName
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "Last Name")
 
   public String getLastName() {
     return lastName;
@@ -101,52 +92,6 @@ public class AgeVerifyRequest {
   }
 
 
-  public AgeVerifyRequest address(AgeVerifyRequestAddress address) {
-    
-    this.address = address;
-    return this;
-  }
-
-   /**
-   * Get address
-   * @return address
-  **/
-  @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
-
-  public AgeVerifyRequestAddress getAddress() {
-    return address;
-  }
-
-
-  public void setAddress(AgeVerifyRequestAddress address) {
-    this.address = address;
-  }
-
-
-  public AgeVerifyRequest DOB(String DOB) {
-    
-    this.DOB = DOB;
-    return this;
-  }
-
-   /**
-   * The value should be ISO-8601 compliant (e.g. 2020-07-21).
-   * @return DOB
-  **/
-  @javax.annotation.Nullable
-  @ApiModelProperty(value = "The value should be ISO-8601 compliant (e.g. 2020-07-21).")
-
-  public String getDOB() {
-    return DOB;
-  }
-
-
-  public void setDOB(String DOB) {
-    this.DOB = DOB;
-  }
-
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -155,26 +100,22 @@ public class AgeVerifyRequest {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    AgeVerifyRequest ageVerifyRequest = (AgeVerifyRequest) o;
-    return Objects.equals(this.firstName, ageVerifyRequest.firstName) &&
-        Objects.equals(this.lastName, ageVerifyRequest.lastName) &&
-        Objects.equals(this.address, ageVerifyRequest.address) &&
-        Objects.equals(this.DOB, ageVerifyRequest.DOB);
+    ContactName contactName = (ContactName) o;
+    return Objects.equals(this.firstName, contactName.firstName) &&
+        Objects.equals(this.lastName, contactName.lastName);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(firstName, lastName, address, DOB);
+    return Objects.hash(firstName, lastName);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class AgeVerifyRequest {\n");
+    sb.append("class ContactName {\n");
     sb.append("    firstName: ").append(toIndentedString(firstName)).append("\n");
     sb.append("    lastName: ").append(toIndentedString(lastName)).append("\n");
-    sb.append("    address: ").append(toIndentedString(address)).append("\n");
-    sb.append("    DOB: ").append(toIndentedString(DOB)).append("\n");
     sb.append("}");
     return sb.toString();
   }
