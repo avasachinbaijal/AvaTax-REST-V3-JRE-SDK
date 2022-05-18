@@ -26,7 +26,7 @@ import Avalara.SDK.AvaTaxEnvironment;
 import Avalara.SDK.Configuration;
 import Avalara.SDK.model.IAMDS.User;
 import org.junit.Test;
-import org.junit.Ignore;
+import io.github.cdimascio.dotenv.Dotenv;
 
 import java.util.UUID;
 
@@ -37,6 +37,7 @@ public class UserApiTest {
     private Avalara.SDK.api.IAMDS.UserApi api;
 
     public UserApiTest() {
+        Dotenv dotenv = Dotenv.configure().ignoreIfMissing().ignoreIfMalformed().load();
         Configuration configuration = new Configuration();
         configuration.setAppName("Test");
         configuration.setAppVersion("1.0");
@@ -46,8 +47,8 @@ public class UserApiTest {
         configuration.setPassword("bar");
         configuration.setTimeout(5000);
         configuration.setEnvironment(AvaTaxEnvironment.Test);
-        configuration.setClientId("***REMOVED***");
-        configuration.setClientSecret("***REMOVED***");
+        configuration.setClientId(dotenv.get("CLIENT_ID"));
+        configuration.setClientSecret(dotenv.get("CLIENT_SECRET"));
         configuration.setTestTokenUrl("https://dev-75323271.okta.com/oauth2/default/v1/token");
         configuration.setTestBasePath("https://localhost:3000");
         try {
