@@ -14,7 +14,7 @@
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.4.33
+ * @version    2.4.34
  * @link       https://github.com/avadev/AvaTax-REST-V3-JRE-SDK
  */
 
@@ -1814,7 +1814,7 @@ public class OrganizationApi {
     }
     private void SetConfiguration(ApiClient client) {
         if (client == null) throw new MissingFormatArgumentException("client");
-        this.localVarApiClient.setSdkVersion("2.4.33");
+        this.localVarApiClient.setSdkVersion("2.4.34");
     }
 }
 
