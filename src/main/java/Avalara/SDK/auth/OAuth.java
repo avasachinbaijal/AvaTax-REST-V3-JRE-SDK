@@ -30,7 +30,6 @@ import java.util.*;
 
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
 public class OAuth implements Authentication {
-  public static String CLIENT_CONFIG_ACCESS_TOKEN = null;
   private Map<String, AccessToken> accessTokenCache = new HashMap<String, AccessToken>();
 
   public String getAccessToken(String scope) {
