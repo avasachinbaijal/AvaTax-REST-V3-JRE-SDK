@@ -34,7 +34,7 @@ public class OAuth implements Authentication {
   private Map<String, AccessToken> accessTokenCache = new HashMap<String, AccessToken>();
 
   public String getAccessToken(String scope) {
-    // If Auth token is not provided by the client, then we will check if we have the token created recently in our
+    // We will first check if we have the token created recently in our
     // cache. If present then we will return from cache otherwise return NULL
     AccessToken accessToken = accessTokenCache.get(standardizeScopes(scope));
     if(!Objects.isNull(accessToken)) {
