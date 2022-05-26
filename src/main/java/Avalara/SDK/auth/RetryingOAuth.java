@@ -158,7 +158,7 @@ public class RetryingOAuth extends OAuth implements Interceptor {
                 OAuthJSONAccessTokenResponse accessTokenResponse =
                         oAuthClient.accessToken(tokenRequestBuilder.setScope(scope).buildBodyMessage());
                 if (accessTokenResponse != null && accessTokenResponse.getAccessToken() != null) {
-                    setAccessToken(scope, accessTokenResponse.getAccessToken());
+                    setAccessToken(scope, accessTokenResponse.getAccessToken(), accessTokenResponse.getExpiresIn());
                 }
             } catch (OAuthSystemException | OAuthProblemException e) {
                 throw new IOException(e);
