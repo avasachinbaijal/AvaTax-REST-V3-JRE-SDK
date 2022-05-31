@@ -430,7 +430,7 @@ public class ApiClient {
                 return;
             }
 			if (auth instanceof OAuth) {
-                ((OAuth) auth).setAccessToken(scope, accessToken);
+                ((OAuth) auth).setAccessToken(scope, accessToken, TimeUnit.DAYS.toSeconds(365));
                 return;
             }
         }

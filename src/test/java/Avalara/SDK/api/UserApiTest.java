@@ -20,11 +20,10 @@
 
 package Avalara.SDK.api;
 
-import Avalara.SDK.ApiClient;
-import Avalara.SDK.ApiException;
-import Avalara.SDK.AvaTaxEnvironment;
-import Avalara.SDK.Configuration;
+import Avalara.SDK.*;
+import Avalara.SDK.auth.OAuth;
 import Avalara.SDK.model.IAMDS.User;
+import org.junit.Assert;
 import org.junit.Test;
 import io.github.cdimascio.dotenv.Dotenv;
 
@@ -49,6 +48,7 @@ public class UserApiTest {
         configuration.setEnvironment(AvaTaxEnvironment.Test);
         configuration.setClientId(dotenv.get("CLIENT_ID"));
         configuration.setClientSecret(dotenv.get("CLIENT_SECRET"));
+        //configuration.setAccessToken(dotenv.get("ACCESS_TOKEN"));
         configuration.setTestTokenUrl("https://dev-75323271.okta.com/oauth2/default/v1/token");
         configuration.setTestBasePath("https://localhost:3000");
         try {
@@ -91,4 +91,19 @@ public class UserApiTest {
         // TODO: test validations
     }
 
+    @Test
+    public void accessTokenCacheExpiryTest() throws InterruptedException {
+        // Scenario 1: When Token is going to expire with 5 minutes of GetAccessToken Call.
+        // In this case, it should return NULL
+        OAuth oAuth = new OAuth();
+        oAuth.setAccessToken("scope1", "abc", 10L);
+        String token = oAuth.getAccessToken("scope1");
+        Assert.assertNull(token);
+
+        // Scenario 2: When token is going to expire in more than 5 minutes of GetAccessToken Call.
+        // In this case, it should return the existing token
+        oAuth.setAccessToken("scope1", "def", 500L);
+        token = oAuth.getAccessToken("scope1");
+        Assert.assertNotNull(token);
+    }
 }
