@@ -1,5 +1,6 @@
 package Avalara.SDK.auth;
 
+import Avalara.SDK.AccessToken;
 import Avalara.SDK.ApiException;
 import Avalara.SDK.Pair;
 
@@ -20,13 +21,14 @@ import org.apache.oltu.oauth2.common.message.types.GrantType;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
-import java.util.Map;
-import java.util.List;
+import java.time.Instant;
+import java.util.*;
 
 public class RetryingOAuth extends OAuth implements Interceptor {
     private OAuthClient oAuthClient;
 
     private TokenRequestBuilder tokenRequestBuilder;
+    private Map<String, AccessToken> accessTokenCache = new HashMap<>();
 
     public RetryingOAuth(OkHttpClient client, TokenRequestBuilder tokenRequestBuilder) {
         this.oAuthClient = new OAuthClient(new OAuthOkHttpClient(client));
@@ -180,5 +182,30 @@ public class RetryingOAuth extends OAuth implements Interceptor {
     public void applyToParams(List<Pair> queryParams, Map<String, String> headerParams, Map<String, String> cookieParams,
                              String payload, String method, URI uri) throws ApiException {
         // No implementation necessary
+    }
+
+    public String getAccessToken(String scope) {
+        // We will first check if we have the token created recently in our
+        // cache. If present then we will return from cache otherwise return NULL
+        AccessToken accessToken = accessTokenCache.get(standardizeScopes(scope));
+        if(!Objects.isNull(accessToken)) {
+          // Check if the token expiry is in next 5 minutes or not, return NULL if true
+          Instant nowPlus5Minutes = Instant.now().plusSeconds(300);
+          if(nowPlus5Minutes.isBefore(accessToken.getExpiryTime()))
+            return accessToken.getToken();
+        }
+        return null;
+    }
+
+    public void setAccessToken(String scope, String accessToken, long expiresInSeconds) {
+        Instant expiryTime = Instant.now().plusSeconds(expiresInSeconds);
+        AccessToken token = new AccessToken(accessToken, expiryTime);
+        this.accessTokenCache.put(standardizeScopes(scope), token);
+    }
+
+    private String standardizeScopes(String scope) {
+        String[] strArray = scope.split(" ");
+        Arrays.sort(strArray);
+        return String.join(" ", strArray);
     }
 }

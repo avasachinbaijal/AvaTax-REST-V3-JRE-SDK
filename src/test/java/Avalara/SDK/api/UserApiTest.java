@@ -21,8 +21,10 @@
 package Avalara.SDK.api;
 
 import Avalara.SDK.*;
-import Avalara.SDK.auth.OAuth;
+import Avalara.SDK.auth.OAuthFlow;
+import Avalara.SDK.auth.RetryingOAuth;
 import Avalara.SDK.model.IAMDS.User;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Test;
 import io.github.cdimascio.dotenv.Dotenv;
@@ -34,23 +36,10 @@ import java.util.UUID;
  */
 public class UserApiTest {
     private Avalara.SDK.api.IAMDS.UserApi api;
+    private Configuration configuration;
 
     public UserApiTest() {
-        Dotenv dotenv = Dotenv.configure().ignoreIfMissing().ignoreIfMalformed().load();
-        Configuration configuration = new Configuration();
-        configuration.setAppName("Test");
-        configuration.setAppVersion("1.0");
-        configuration.setMachineName("LocalBox");
-        // Configure Auth to run test here.
-        configuration.setUsername("foo");
-        configuration.setPassword("bar");
-        configuration.setTimeout(5000);
-        configuration.setEnvironment(AvaTaxEnvironment.Test);
-        configuration.setClientId(dotenv.get("CLIENT_ID"));
-        configuration.setClientSecret(dotenv.get("CLIENT_SECRET"));
-        //configuration.setAccessToken(dotenv.get("ACCESS_TOKEN"));
-        configuration.setTestTokenUrl("https://dev-75323271.okta.com/oauth2/default/v1/token");
-        configuration.setTestBasePath("https://localhost:3000");
+        configuration = getConfiguration();
         try {
             ApiClient apiClient = new ApiClient(configuration);
             api = new Avalara.SDK.api.IAMDS.UserApi(apiClient);
@@ -59,6 +48,25 @@ public class UserApiTest {
         }
     }
 
+    @NotNull
+    private Configuration getConfiguration() {
+        Dotenv dotenv = Dotenv.configure().ignoreIfMissing().ignoreIfMalformed().load();
+        Configuration configuration = new Configuration();
+        configuration.setAppName("Test");
+        configuration.setAppVersion("1.0");
+        configuration.setMachineName("LocalBox");
+        // Configure Auth to run test here.
+        //configuration.setUsername("foo");
+        //configuration.setPassword("bar");
+        configuration.setTimeout(5000);
+        configuration.setEnvironment(AvaTaxEnvironment.Test);
+        //configuration.setClientId(dotenv.get("CLIENT_ID"));
+        //configuration.setClientSecret(dotenv.get("CLIENT_SECRET"));
+        configuration.setAccessToken(dotenv.get("ACCESS_TOKEN"));
+        configuration.setTestTokenUrl("https://dev-75323271.okta.com/oauth2/default/v1/token");
+        configuration.setTestBasePath("https://localhost:3000");
+        return configuration;
+    }
 
     /**
      * Removes the transaction from consideration when evaluating regulations that span multiple transactions.
@@ -93,17 +101,18 @@ public class UserApiTest {
 
     @Test
     public void accessTokenCacheExpiryTest() throws InterruptedException {
+        RetryingOAuth retryingOAuth = new RetryingOAuth(configuration.getTestTokenUrl(), configuration.getClientId(), OAuthFlow.application, configuration.getClientSecret(), null);
+
         // Scenario 1: When Token is going to expire with 5 minutes of GetAccessToken Call.
         // In this case, it should return NULL
-        OAuth oAuth = new OAuth();
-        oAuth.setAccessToken("scope1", "abc", 10L);
-        String token = oAuth.getAccessToken("scope1");
+        retryingOAuth.setAccessToken("scope1", "abc", 10L);
+        String token = retryingOAuth.getAccessToken("scope1");
         Assert.assertNull(token);
 
         // Scenario 2: When token is going to expire in more than 5 minutes of GetAccessToken Call.
         // In this case, it should return the existing token
-        oAuth.setAccessToken("scope1", "def", 500L);
-        token = oAuth.getAccessToken("scope1");
+        retryingOAuth.setAccessToken("scope1", "def", 500L);
+        token = retryingOAuth.getAccessToken("scope1");
         Assert.assertNotNull(token);
     }
 }

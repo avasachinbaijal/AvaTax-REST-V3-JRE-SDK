@@ -20,49 +20,27 @@
 
 package Avalara.SDK.auth;
 
-import Avalara.SDK.AccessToken;
 import Avalara.SDK.Pair;
 import Avalara.SDK.ApiException;
 
 import java.net.URI;
-import java.time.Instant;
 import java.util.*;
 
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
 public class OAuth implements Authentication {
-  private Map<String, AccessToken> accessTokenCache = new HashMap<String, AccessToken>();
+  private String accessToken;
 
   public String getAccessToken(String scope) {
-    // We will first check if we have the token created recently in our
-    // cache. If present then we will return from cache otherwise return NULL
-    AccessToken accessToken = accessTokenCache.get(standardizeScopes(scope));
-    if(!Objects.isNull(accessToken)) {
-      // Check if the token expiry is in next 5 minutes or not, return NULL if true
-      Instant nowPlus5Minutes = Instant.now().plusSeconds(300);
-      if(nowPlus5Minutes.isBefore(accessToken.getExpiryTime()))
-        return accessToken.getToken();
-    }
-    return null;
+    return this.accessToken;
   }
 
-  public void setAccessToken(String scope, String accessToken, long expiresInSeconds) {
-    Instant expiryTime = Instant.now().plusSeconds(expiresInSeconds);
-    AccessToken token = new AccessToken(accessToken, expiryTime);
-    this.accessTokenCache.put(standardizeScopes(scope), token);
+  public void setAccessToken(String accessToken) {
+    this.accessToken = accessToken;
   }
 
   @Override
   public void applyToParams(List<Pair> queryParams, Map<String, String> headerParams, Map<String, String> cookieParams,
                             String payload, String method, URI uri) throws ApiException {
-    String scope = headerParams.get("scope");
-    if (accessTokenCache.get(standardizeScopes(scope)) != null) {
-      headerParams.put("Authorization", "Bearer " + accessTokenCache.get(scope));
-    }
-  }
-
-  private String standardizeScopes(String scope) {
-    String[] strArray = scope.split(" ");
-    Arrays.sort(strArray);
-    return String.join(" ", strArray);
+    headerParams.put("Authorization", "Bearer " + accessToken);
   }
 }
