@@ -66,14 +66,14 @@ public class Configuration {
     /**
      * Gets or sets the access token (OAuth 2.0).
      */
-    private String AccessToken;
+    private String BearerToken;
 
-    public String getAccessToken() {
-        return AccessToken;
+    public String getBearerToken() {
+        return BearerToken;
     }
 
-    public void setAccessToken(String accessToken) {
-        AccessToken = accessToken;
+    public void setBearerToken(String bearerToken) {
+        BearerToken = bearerToken;
     }
 
     /**

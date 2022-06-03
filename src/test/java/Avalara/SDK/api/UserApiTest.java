@@ -62,7 +62,7 @@ public class UserApiTest {
         configuration.setEnvironment(AvaTaxEnvironment.Test);
         //configuration.setClientId(dotenv.get("CLIENT_ID"));
         //configuration.setClientSecret(dotenv.get("CLIENT_SECRET"));
-        configuration.setAccessToken(dotenv.get("ACCESS_TOKEN"));
+        configuration.setBearerToken(dotenv.get("ACCESS_TOKEN"));
         configuration.setTestTokenUrl("https://dev-75323271.okta.com/oauth2/default/v1/token");
         configuration.setTestBasePath("https://localhost:3000");
         return configuration;

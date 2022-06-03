@@ -117,10 +117,10 @@ public class ApiClient {
             this.setPassword(config.getPassword());
         }
 
-        if (config.getAccessToken() != null) {
+        if (config.getBearerToken() != null) {
             OAuth oAuth = new OAuth();
             authentications.put("OAuth", oAuth);
-            this.setAccessToken(config.getAccessToken());
+            this.setAccessToken(config.getBearerToken());
         }
 
         // Prevent the authentications from being modified.
