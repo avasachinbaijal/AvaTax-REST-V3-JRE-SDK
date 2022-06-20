@@ -102,6 +102,8 @@ public class ApiClient {
 
         // Setup authentications (key: authentication name, value: authentication).
         if (config.getClientId() != null && config.getClientSecret() != null) {
+            // Todo: Remove the following
+            System.out.println("Step: 1 Coming into client id and client sec");
             String tokenUrl = getTokenUrl(config);
             // Only supporting Client Credential flow for V1 (OAuthFlow.application)
             RetryingOAuth retryingOAuth = new RetryingOAuth(tokenUrl, config.getClientId(), OAuthFlow.application, config.getClientSecret(), null);
@@ -536,6 +538,8 @@ public class ApiClient {
             case Sandbox:
                 return fetchTokenURLFromOpenIdConnect(ApiConstants.OPENID_CONNECT_URL_SBX, config);
             case QA:
+                // Todo: Remove the following
+                System.out.println("Step: 2 Coming into getTokenUrl -> QA");
                 return fetchTokenURLFromOpenIdConnect(ApiConstants.OPENID_CONNECT_URL_QA, config);
             case Test:
                 String tokenUrl = config.getTokenUrl();
@@ -558,6 +562,8 @@ public class ApiClient {
             ApiResponse<OpenIdConnectURLs> response = execute(httpClient.newCall(request), localVarReturnType);
             OpenIdConnectURLs openIdConnectURLs = response.getData();
             config.setTokenUrl(openIdConnectURLs.getTokenEndpoint());
+            // Todo: Remove the following
+            System.out.println("Step: 3 Setting the token URL -> "+openIdConnectURLs.getTokenEndpoint());
             return openIdConnectURLs.getTokenEndpoint();
         } catch(Exception ex) {
             System.err.println("Exception when calling OpenIdConnect to fetch the token endpoint");
