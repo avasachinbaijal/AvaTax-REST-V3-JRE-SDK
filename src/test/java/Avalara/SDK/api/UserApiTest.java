@@ -38,36 +38,6 @@ public class UserApiTest {
     private Avalara.SDK.api.IAMDS.UserApi api;
     private Configuration configuration;
 
-    public UserApiTest() {
-        configuration = getConfiguration();
-        try {
-            ApiClient apiClient = new ApiClient(configuration);
-            api = new Avalara.SDK.api.IAMDS.UserApi(apiClient);
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
-    }
-
-    @NotNull
-    private Configuration getConfiguration() {
-        Dotenv dotenv = Dotenv.configure().ignoreIfMissing().ignoreIfMalformed().load();
-        Configuration configuration = new Configuration();
-        configuration.setAppName("Test");
-        configuration.setAppVersion("1.0");
-        configuration.setMachineName("LocalBox");
-        // Configure Auth to run test here.
-        //configuration.setUsername("foo");
-        //configuration.setPassword("bar");
-        configuration.setTimeout(5000);
-        configuration.setEnvironment(AvaTaxEnvironment.Test);
-        //configuration.setClientId(dotenv.get("CLIENT_ID"));
-        //configuration.setClientSecret(dotenv.get("CLIENT_SECRET"));
-        configuration.setBearerToken(dotenv.get("ACCESS_TOKEN"));
-        configuration.setTokenUrl("https://dev-75323271.okta.com/oauth2/default/v1/token");
-        configuration.setTestBasePath("https://localhost:3000");
-        return configuration;
-    }
-
     /**
      * Removes the transaction from consideration when evaluating regulations that span multiple transactions.
      *
@@ -149,7 +119,7 @@ public class UserApiTest {
             ApiClient apiClient = new ApiClient(configuration);
             api = new Avalara.SDK.api.IAMDS.UserApi(apiClient);
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            System.err.println(ex.getMessage());
         }
     }
 }
