@@ -157,14 +157,14 @@ public class Configuration {
     /**
      * Gets or sets the Test Toke URL. Used for local developer testing for retrieving OAuth tokens.
      */
-    private String TestTokenUrl;
+    private String TokenUrl;
 
-    public String getTestTokenUrl() {
-        return TestTokenUrl;
+    public String getTokenUrl() {
+        return TokenUrl;
     }
 
-    public void setTestTokenUrl(String testTokenUrl) {
-        TestTokenUrl = testTokenUrl;
+    public void setTokenUrl(String tokenUrl) {
+        TokenUrl = tokenUrl;
     }
 
     /**
@@ -201,6 +201,7 @@ public class Configuration {
             case Production:
                 return AVATAX_PRODUCTION_URL;
             case Sandbox:
+            case QA:
                 return AVATAX_SANDBOX_URL;
             case Test:
                 if (this.getTestBasePath() == null)
