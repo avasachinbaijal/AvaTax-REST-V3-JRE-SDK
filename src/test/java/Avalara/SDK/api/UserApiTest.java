@@ -47,8 +47,10 @@ public class UserApiTest {
      *          if the Api call fails
      */
     @Test
-    public void createUserTest() throws ApiException {
-        createConfigAndApiClient(AvaTaxEnvironment.Test);
+    public void createUserTest() throws Exception {
+        configuration = getConfiguration(AvaTaxEnvironment.Test);
+        ApiClient apiClient = new ApiClient(configuration);
+        api = new Avalara.SDK.api.IAMDS.UserApi(apiClient);
         UUID correlationId = UUID.randomUUID();
         User user = new User();
         try {
@@ -71,8 +73,8 @@ public class UserApiTest {
     }
 
     @Test
-    public void accessTokenCacheExpiryTest() throws InterruptedException {
-        createConfigAndApiClient(AvaTaxEnvironment.Test);
+    public void accessTokenCacheExpiryTest() throws Exception {
+        configuration = getConfiguration(AvaTaxEnvironment.Test);
         RetryingOAuth retryingOAuth = new RetryingOAuth(configuration.getTokenUrl(), configuration.getClientId(), OAuthFlow.application, configuration.getClientSecret(), null);
         // Scenario 1: When Token is going to expire with 5 minutes of GetAccessToken Call.
         // In this case, it should return NULL
@@ -88,8 +90,11 @@ public class UserApiTest {
     }
 
     @Test
-    public void verifyOpenIdConfigurationTest() throws InterruptedException {
-        createConfigAndApiClient(AvaTaxEnvironment.QA);
+    public void verifyOpenIdConfigurationTest() throws Exception {
+        configuration = getConfiguration(AvaTaxEnvironment.QA);
+        // initiate the constructor call which will set the token URL
+        ApiClient apiClient = new ApiClient(configuration);
+        // I am not using the api client here but this could be used to initiate any calls
         Assert.assertEquals("https://ai-awscqa.avlr.sh/connect/token", configuration.getTokenUrl());
     }
 
@@ -111,15 +116,5 @@ public class UserApiTest {
         configuration.setTokenUrl("https://dev-75323271.okta.com/oauth2/default/v1/token");
         configuration.setTestBasePath("https://localhost:3000");
         return configuration;
-    }
-
-    private void createConfigAndApiClient(AvaTaxEnvironment env){
-        configuration = getConfiguration(env);
-        try {
-            ApiClient apiClient = new ApiClient(configuration);
-            api = new Avalara.SDK.api.IAMDS.UserApi(apiClient);
-        } catch (Exception ex) {
-            System.err.println(ex.getMessage());
-        }
     }
 }
