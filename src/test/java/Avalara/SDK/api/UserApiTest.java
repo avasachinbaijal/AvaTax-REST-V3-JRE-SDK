@@ -94,7 +94,11 @@ public class UserApiTest {
     public void verifyOpenIdConfigurationTest() throws Exception {
         Configuration configuration = getConfiguration(AvaTaxEnvironment.QA);
         ApiClient apiClient = new ApiClient(configuration);
-        Assert.assertEquals("https://ai-awscqa.avlr.sh/connect/token", configuration.getTokenUrl());
+        // As we don't have .env file in repo therefore ignore this test case if we choose to
+        // set clientId/secret otherwise it will go in retryingIntercept and fail. The following method call is
+        // just to make sure that the response comes back fine and we can parse the right URL
+        String tokenUrl = apiClient.getTokenUrl(configuration);
+        Assert.assertEquals("https://ai-awscqa.avlr.sh/connect/token", tokenUrl);
     }
 
     @NotNull
@@ -109,8 +113,8 @@ public class UserApiTest {
         //configuration.setPassword("bar");
         configuration.setTimeout(5000);
         configuration.setEnvironment(env);
-        configuration.setClientId(dotenv.get("CLIENT_ID"));
-        configuration.setClientSecret(dotenv.get("CLIENT_SECRET"));
+        //configuration.setClientId(dotenv.get("CLIENT_ID"));
+        //configuration.setClientSecret(dotenv.get("CLIENT_SECRET"));
         //configuration.setAccessToken(dotenv.get("ACCESS_TOKEN"));
         configuration.setTestBasePath("https://localhost:3000");
         return configuration;
