@@ -37,6 +37,13 @@ import java.util.UUID;
 public class UserApiTest {
     private Avalara.SDK.api.IAMDS.UserApi api;
 
+    @Test
+    public void verifyOpenIdConfigurationTest() throws Exception {
+        Configuration configuration = getConfiguration(AvaTaxEnvironment.QA);
+        ApiClient apiClient = new ApiClient(configuration);
+        Assert.assertEquals("https://ai-awscqa.avlr.sh/connect/token", configuration.getTokenUrl());
+    }
+
     /**
      * Removes the transaction from consideration when evaluating regulations that span multiple transactions.
      *
@@ -88,13 +95,6 @@ public class UserApiTest {
         retryingOAuth.setAccessToken("scope1", "def", 500L);
         token = retryingOAuth.getAccessToken("scope1");
         Assert.assertNotNull(token);
-    }
-
-    @Test
-    public void verifyOpenIdConfigurationTest() throws Exception {
-        Configuration configuration = getConfiguration(AvaTaxEnvironment.QA);
-        ApiClient apiClient = new ApiClient(configuration);
-        Assert.assertEquals("https://ai-awscqa.avlr.sh/connect/token", configuration.getTokenUrl());
     }
 
     @NotNull
