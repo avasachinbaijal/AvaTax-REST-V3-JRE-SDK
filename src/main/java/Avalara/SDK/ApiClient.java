@@ -93,8 +93,6 @@ public class ApiClient {
      * Basic constructor for ApiClient
      */
     public ApiClient(Configuration config) throws Exception {
-        // Todo: Remove the following
-        System.out.println("Step: 0 Lets see if this gets printed");
         if (config == null)
             throw new NullPointerException("Parameter 'config' cannot be null");
         if (config.getEnvironment() == null )
@@ -104,8 +102,6 @@ public class ApiClient {
 
         // Setup authentications (key: authentication name, value: authentication).
         if (config.getClientId() != null && config.getClientSecret() != null) {
-            // Todo: Remove the following
-            System.out.println("Step: 1 Coming into client id and client sec");
             String tokenUrl = getTokenUrl(config);
             // Only supporting Client Credential flow for V1 (OAuthFlow.application)
             RetryingOAuth retryingOAuth = new RetryingOAuth(tokenUrl, config.getClientId(), OAuthFlow.application, config.getClientSecret(), null);
@@ -118,23 +114,17 @@ public class ApiClient {
 
         // Set Authentication type based on Configuration passed into the ApiClient
         if (config.getUsername() != null && config.getPassword() != null) {
-            // Todo: Remove the following
-            System.out.println("Step: X Coming into client id and client sec");
             authentications.put("BasicAuth", new HttpBasicAuth());
             this.setUsername(config.getUsername());
             this.setPassword(config.getPassword());
         }
 
         if (config.getBearerToken() != null) {
-            // Todo: Remove the following
-            System.out.println("Step: Y Coming into client id and client sec");
             OAuth oAuth = new OAuth();
             authentications.put("OAuth", oAuth);
             this.setAccessToken(config.getBearerToken());
         }
 
-        // Todo: Remove the following
-        System.out.println("Step: Z Coming into client id and client sec");
         // Prevent the authentications from being modified.
         authentications = Collections.unmodifiableMap(authentications);
         // Instantiate config
@@ -546,8 +536,6 @@ public class ApiClient {
             case Sandbox:
                 return fetchTokenURLFromOpenIdConnect(ApiConstants.OPENID_CONNECT_URL_SBX, config);
             case QA:
-                // Todo: Remove the following
-                System.out.println("Step: 2 Coming into getTokenUrl -> QA");
                 return fetchTokenURLFromOpenIdConnect(ApiConstants.OPENID_CONNECT_URL_QA, config);
             case Test:
                 String tokenUrl = config.getTokenUrl();
@@ -570,8 +558,6 @@ public class ApiClient {
             ApiResponse<OpenIdConnectURLs> response = execute(httpClient.newCall(request), localVarReturnType);
             OpenIdConnectURLs openIdConnectURLs = response.getData();
             config.setTokenUrl(openIdConnectURLs.getTokenEndpoint());
-            // Todo: Remove the following
-            System.out.println("Step: 3 Setting the token URL -> "+openIdConnectURLs.getTokenEndpoint());
             return openIdConnectURLs.getTokenEndpoint();
         } catch(Exception ex) {
             System.err.println("Exception when calling OpenIdConnect to fetch the token endpoint");
