@@ -48,6 +48,7 @@ public class UserApiTest {
     @Test
     public void createUserTest() throws Exception {
         Configuration configuration = getConfiguration(AvaTaxEnvironment.Test);
+        configuration.setTokenUrl("https://dev-75323271.okta.com/oauth2/default/v1/token");
         ApiClient apiClient = new ApiClient(configuration);
         api = new Avalara.SDK.api.IAMDS.UserApi(apiClient);
         UUID correlationId = UUID.randomUUID();
@@ -74,6 +75,7 @@ public class UserApiTest {
     @Test
     public void accessTokenCacheExpiryTest() {
         Configuration configuration = getConfiguration(AvaTaxEnvironment.Test);
+        configuration.setTokenUrl("https://dev-75323271.okta.com/oauth2/default/v1/token");
         RetryingOAuth retryingOAuth = new RetryingOAuth(configuration.getTokenUrl(), configuration.getClientId(), OAuthFlow.application, configuration.getClientSecret(), null);
         // Scenario 1: When Token is going to expire with 5 minutes of GetAccessToken Call.
         // In this case, it should return NULL
@@ -110,7 +112,6 @@ public class UserApiTest {
         configuration.setClientId(dotenv.get("CLIENT_ID"));
         configuration.setClientSecret(dotenv.get("CLIENT_SECRET"));
         //configuration.setAccessToken(dotenv.get("ACCESS_TOKEN"));
-        configuration.setTokenUrl("https://dev-75323271.okta.com/oauth2/default/v1/token");
         configuration.setTestBasePath("https://localhost:3000");
         return configuration;
     }
