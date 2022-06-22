@@ -14,6 +14,8 @@
 package Avalara.SDK;
 
 import Avalara.SDK.auth.*;
+import Avalara.SDK.model.IAMDS.Feature;
+import com.google.gson.reflect.TypeToken;
 import okhttp3.*;
 import okhttp3.internal.http.HttpMethod;
 import okhttp3.internal.tls.OkHostnameVerifier;
@@ -530,17 +532,38 @@ public class ApiClient {
         AvaTaxEnvironment env = config.getEnvironment();
         switch (env) {
             case Production:
-                return "https://avalara.identity/token";
+                return fetchTokenURLFromOpenIdConnect(ApiConstants.OPENID_CONNECT_URL_PRD, config);
             case Sandbox:
-                return "https://avalara.identity.sandbox/token";
+                return fetchTokenURLFromOpenIdConnect(ApiConstants.OPENID_CONNECT_URL_SBX, config);
+            case QA:
+                return fetchTokenURLFromOpenIdConnect(ApiConstants.OPENID_CONNECT_URL_QA, config);
             case Test:
-                String tokenUrl = config.getTestTokenUrl();
+                String tokenUrl = config.getTokenUrl();
                 if (tokenUrl == null) {
                     throw new Exception("When using the Test Environment, a tokenUrl must be specified for OAuth2 token retrieval.");
                 }
                 return tokenUrl;
         }
         return "";
+    }
+
+    /**
+     * Method to fetch the Token URL from OpenID Configuration
+     */
+    private String fetchTokenURLFromOpenIdConnect(String url, Configuration config) throws ApiException {
+        try {
+            final Request.Builder reqBuilder = new Request.Builder().url(url);
+            Request request = reqBuilder.method("GET", null).build();
+            Type localVarReturnType = new TypeToken<OpenIdConnectURLs>() {}.getType();
+            ApiResponse<OpenIdConnectURLs> response = execute(httpClient.newCall(request), localVarReturnType);
+            OpenIdConnectURLs openIdConnectURLs = response.getData();
+            config.setTokenUrl(openIdConnectURLs.getTokenEndpoint());
+            return openIdConnectURLs.getTokenEndpoint();
+        } catch(Exception ex) {
+            System.err.println("Exception when calling OpenIdConnect to fetch the token endpoint");
+            ex.printStackTrace();
+            throw ex;
+        }
     }
 
     /**
