@@ -157,14 +157,14 @@ public class Configuration {
     /**
      * Gets or sets the Test Toke URL. Used for local developer testing for retrieving OAuth tokens.
      */
-    private String TokenUrl;
+    private String tokenUrl;
 
     public String getTokenUrl() {
-        return TokenUrl;
+        return tokenUrl;
     }
 
     public void setTokenUrl(String tokenUrl) {
-        TokenUrl = tokenUrl;
+        this.tokenUrl = tokenUrl;
     }
 
     /**

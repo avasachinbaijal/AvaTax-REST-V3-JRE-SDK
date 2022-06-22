@@ -39,17 +39,23 @@ public class UserApiTest {
     private Avalara.SDK.api.IAMDS.UserApi api;
     private Configuration configuration;
 
+    public UserApiTest() {
+        configuration = getConfiguration();
+        try {
+            ApiClient apiClient = new ApiClient(configuration);
+            api = new Avalara.SDK.api.IAMDS.UserApi(apiClient);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
     /**
      * Removes the transaction from consideration when evaluating regulations that span multiple transactions.
      *
      *
      *
-     * @throws ApiException
-     *          if the Api call fails
      */
     @Test
-    public void createUserTest() throws ApiException {
-        createConfigAndApiClient(AvaTaxEnvironment.Test);
+    public void createUserTest() {
         UUID correlationId = UUID.randomUUID();
         User user = new User();
         try {
@@ -72,8 +78,7 @@ public class UserApiTest {
     }
 
     @Test
-    public void accessTokenCacheExpiryTest() throws InterruptedException {
-        createConfigAndApiClient(AvaTaxEnvironment.Test);
+    public void accessTokenCacheExpiryTest() {
         RetryingOAuth retryingOAuth = new RetryingOAuth(configuration.getTokenUrl(), configuration.getClientId(), OAuthFlow.application, configuration.getClientSecret(), null);
         // Scenario 1: When Token is going to expire with 5 minutes of GetAccessToken Call.
         // In this case, it should return NULL
@@ -90,13 +95,12 @@ public class UserApiTest {
 
     @Test
     @Ignore
-    public void verifyOpenIdConfigurationTest() throws InterruptedException {
-        createConfigAndApiClient(AvaTaxEnvironment.QA);
+    public void verifyOpenIdConfigurationTest() {
         Assert.assertEquals("https://ai-awscqa.avlr.sh/connect/token", configuration.getTokenUrl());
     }
 
     @NotNull
-    private Configuration getConfiguration(AvaTaxEnvironment env) {
+    private Configuration getConfiguration() {
         Dotenv dotenv = Dotenv.configure().ignoreIfMissing().ignoreIfMalformed().load();
         Configuration configuration = new Configuration();
         configuration.setAppName("Test");
@@ -106,22 +110,12 @@ public class UserApiTest {
         //configuration.setUsername("foo");
         //configuration.setPassword("bar");
         configuration.setTimeout(5000);
-        configuration.setEnvironment(env);
+        configuration.setEnvironment(AvaTaxEnvironment.Test);
         configuration.setClientId(dotenv.get("CLIENT_ID"));
         configuration.setClientSecret(dotenv.get("CLIENT_SECRET"));
         //configuration.setAccessToken(dotenv.get("ACCESS_TOKEN"));
         configuration.setTokenUrl("https://dev-75323271.okta.com/oauth2/default/v1/token");
         configuration.setTestBasePath("https://localhost:3000");
         return configuration;
-    }
-
-    private void createConfigAndApiClient(AvaTaxEnvironment env){
-        configuration = getConfiguration(env);
-        try {
-            ApiClient apiClient = new ApiClient(configuration);
-            api = new Avalara.SDK.api.IAMDS.UserApi(apiClient);
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
     }
 }
