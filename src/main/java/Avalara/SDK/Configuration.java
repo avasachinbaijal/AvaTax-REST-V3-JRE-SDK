@@ -155,7 +155,7 @@ public class Configuration {
     }
 
     /**
-     * Gets or sets the Test Toke URL. Used for local developer testing for retrieving OAuth tokens.
+     * Gets or sets the  Token URL. Used for local developer testing for retrieving OAuth tokens.
      */
     private String tokenUrl;
 
@@ -166,6 +166,22 @@ public class Configuration {
     public void setTokenUrl(String tokenUrl) {
         this.tokenUrl = tokenUrl;
     }
+
+
+    /**
+     * Gets or sets the  Token URL. Used for local developer testing for retrieving OAuth tokens.
+     */
+    private String deviceAuthorizationUrl;
+
+    public String getDeviceAuthorizationUrl() {
+        return deviceAuthorizationUrl;
+    }
+
+    public void setDeviceAuthorizationUrl(String deviceAuthorizationUrl) {
+        this.deviceAuthorizationUrl = deviceAuthorizationUrl;
+    }
+
+
 
     /**
      * Gets or sets the ClientId Used for OAuth2 Client Credentials flow.

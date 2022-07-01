@@ -14,9 +14,19 @@
 package Avalara.SDK;
 
 import Avalara.SDK.auth.*;
-import Avalara.SDK.model.IAMDS.Feature;
+
 import com.google.gson.reflect.TypeToken;
+
+import com.nimbusds.oauth2.sdk.*;
+import com.nimbusds.oauth2.sdk.device.*;
+import com.nimbusds.oauth2.sdk.http.HTTPRequest;
+import com.nimbusds.oauth2.sdk.http.HTTPResponse;
+import com.nimbusds.oauth2.sdk.id.ClientID;
+
+import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import okhttp3.*;
+import okhttp3.Request;
+import okhttp3.Response;
 import okhttp3.internal.http.HttpMethod;
 import okhttp3.internal.tls.OkHostnameVerifier;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -24,11 +34,10 @@ import okhttp3.logging.HttpLoggingInterceptor.Level;
 import okio.Buffer;
 import okio.BufferedSink;
 import okio.Okio;
+import org.apache.commons.lang3.StringUtils;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.OffsetDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
-import org.apache.oltu.oauth2.client.request.OAuthClientRequest.TokenRequestBuilder;
-import org.apache.oltu.oauth2.common.message.types.GrantType;
 
 import javax.net.ssl.*;
 import java.io.File;
@@ -37,6 +46,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.file.Files;
@@ -47,7 +57,6 @@ import java.security.SecureRandom;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.text.DateFormat;
 import java.util.*;
 import java.util.Map.Entry;
@@ -101,15 +110,23 @@ public class ApiClient {
         initHttpClient();
 
         // Setup authentications (key: authentication name, value: authentication).
-        if (config.getClientId() != null && config.getClientSecret() != null) {
-            String tokenUrl = getTokenUrl(config);
-            // Only supporting Client Credential flow for V1 (OAuthFlow.application)
-            RetryingOAuth retryingOAuth = new RetryingOAuth(tokenUrl, config.getClientId(), OAuthFlow.application, config.getClientSecret(), null);
-            authentications.put(
-                    "OAuth",
-                    retryingOAuth
-            );
-            initHttpClient(Collections.<Interceptor>singletonList(retryingOAuth));
+        if (config.getClientId() != null) {
+            String tokenUrl = null;
+            String deviceAuthorizationUrl = null;
+            if(config.getClientSecret() == null) {
+                tokenUrl = getTokenUrl(config);
+                deviceAuthorizationUrl = getDeviceAuthorizationUrl(config);
+            }
+
+            if(config.getClientSecret() != null) {
+                RetryingOAuth retryingOAuth = new RetryingOAuth(tokenUrl, config.getClientId(),
+                        config.getClientSecret(), new ClientCredentialsGrant(), null);
+                authentications.put(
+                        "OAuth",
+                        retryingOAuth
+                );
+                initHttpClient(Collections.<Interceptor>singletonList(retryingOAuth));
+            }
         }
 
         // Set Authentication type based on Configuration passed into the ApiClient
@@ -547,6 +564,25 @@ public class ApiClient {
         return "";
     }
 
+    public String getDeviceAuthorizationUrl(Configuration config) throws Exception {
+        AvaTaxEnvironment env = config.getEnvironment();
+        switch (env) {
+            case Production:
+                return fetchDeviceAuthorizationURLFromOpenIdConnect(ApiConstants.OPENID_CONNECT_URL_PRD, config);
+            case Sandbox:
+                return fetchDeviceAuthorizationURLFromOpenIdConnect(ApiConstants.OPENID_CONNECT_URL_SBX, config);
+            case QA:
+                return fetchDeviceAuthorizationURLFromOpenIdConnect(ApiConstants.OPENID_CONNECT_URL_QA, config);
+            case Test:
+                String deviceAuthorizationUrl = config.getDeviceAuthorizationUrl();
+                if (deviceAuthorizationUrl == null) {
+                    throw new Exception("When using the Test Environment, an authorization url must be specified for OAuth2 token retrieval.");
+                }
+                return deviceAuthorizationUrl;
+        }
+        return "";
+    }
+
     /**
      * Method to fetch the Token URL from OpenID Configuration
      */
@@ -559,6 +595,25 @@ public class ApiClient {
             OpenIdConnectURLs openIdConnectURLs = response.getData();
             config.setTokenUrl(openIdConnectURLs.getTokenEndpoint());
             return openIdConnectURLs.getTokenEndpoint();
+        } catch(Exception ex) {
+            System.err.println("Exception when calling OpenIdConnect to fetch the token endpoint");
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
+
+    /**
+     * Method to fetch the Token URL from OpenID Configuration
+     */
+    private String fetchDeviceAuthorizationURLFromOpenIdConnect(String url, Configuration config) throws ApiException {
+        try {
+            final Request.Builder reqBuilder = new Request.Builder().url(url);
+            Request request = reqBuilder.method("GET", null).build();
+            Type localVarReturnType = new TypeToken<OpenIdConnectURLs>() {}.getType();
+            ApiResponse<OpenIdConnectURLs> response = execute(httpClient.newCall(request), localVarReturnType);
+            OpenIdConnectURLs openIdConnectURLs = response.getData();
+            config.setDeviceAuthorizationUrl(openIdConnectURLs.getDeviceAuthorizationEndpoint());
+            return openIdConnectURLs.getDeviceAuthorizationEndpoint();
         } catch(Exception ex) {
             System.err.println("Exception when calling OpenIdConnect to fetch the token endpoint");
             ex.printStackTrace();
@@ -632,20 +687,6 @@ public class ApiClient {
         return this;
     }
 
-    /**
-     * Helper method to configure the token endpoint of the first oauth found in the apiAuthorizations (there should be only one)
-     *
-     * @return Token request builder
-     */
-    public TokenRequestBuilder getTokenEndPoint() {
-        for (Authentication apiAuth : authentications.values()) {
-            if (apiAuth instanceof RetryingOAuth) {
-                RetryingOAuth retryingOAuth = (RetryingOAuth) apiAuth;
-                return retryingOAuth.getTokenRequestBuilder();
-            }
-        }
-        return null;
-    }
 
     /**
      * Format the given parameter object into string.
@@ -1542,4 +1583,95 @@ public class ApiClient {
         // empty http request body
         return "";
     }
+
+    // Initiates a device authorization OAuth flow
+    public DeviceAuthorizationSuccessResponse initiateDeviceAuthorizationOAuth(String scope) {
+
+        try {
+            HTTPRequest deviceAuthorizationRequest = null;
+            try {
+                deviceAuthorizationRequest = new DeviceAuthorizationRequest.Builder(new ClientID(this.configuration.getClientId()))
+                        .scope(StringUtils.isNotEmpty(scope)?new Scope(scope):null)
+                        .endpointURI(new URI(this.configuration.getDeviceAuthorizationUrl()))
+                        .build()
+                        .toHTTPRequest();
+            } catch (URISyntaxException e) {
+                System.out.println("Unable to parse the device authorization uri");
+                throw e;
+            }
+
+
+            HTTPResponse deviceAuthorizationHttpResponse = null;
+            try {
+                deviceAuthorizationHttpResponse = deviceAuthorizationRequest.send();
+            } catch (IOException e) {
+                System.out.println("Unable to get the response from device Authorization HTTP Request");
+                throw e;
+            }
+
+            // Parse the response
+            DeviceAuthorizationResponse deviceAuthorizationResponse = null;
+            try {
+                deviceAuthorizationResponse = DeviceAuthorizationResponse.parse(deviceAuthorizationHttpResponse);
+            } catch (ParseException e) {
+                System.out.println("Unable to parse the response from device Authorization Request");
+                throw e;
+            }
+
+            if (!deviceAuthorizationResponse.indicatesSuccess()) {
+                System.out.println("Error: " + deviceAuthorizationResponse.toErrorResponse().getErrorObject());
+                throw new Exception(deviceAuthorizationResponse.toErrorResponse().getErrorObject().toString());
+            }
+
+            DeviceAuthorizationSuccessResponse successResponse = deviceAuthorizationResponse.toSuccessResponse();
+
+            System.out.println("Device code: " + successResponse.getDeviceCode());
+            System.out.println("User code: " + successResponse.getUserCode());
+            System.out.println("Interval: " + successResponse.getInterval());
+            System.out.println("Lifetime: " + successResponse.getLifetime());
+            System.out.println("VerificationURI: " + successResponse.getVerificationURI());
+            System.out.println("Verification URI Complete: " + successResponse.getVerificationURIComplete());
+            return successResponse;
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
+    public void getAuthorizationTokenForDeviceFlow(String deviceAuthCode ){
+
+        try {
+            AuthorizationCode code = new AuthorizationCode(deviceAuthCode);
+            AuthorizationGrant codeGrant = new DeviceCodeGrant(new DeviceCode(deviceAuthCode));
+            ClientID clientID = new ClientID(this.configuration.getClientId());
+            URI tokenEndpoint = new URI(this.configuration.getTokenUrl());
+            TokenRequest request = new TokenRequest(tokenEndpoint, clientID, codeGrant);
+            TokenResponse response = TokenResponse.parse(request.toHTTPRequest().send());
+
+            if (!response.indicatesSuccess()) {
+                // We got an error response...
+                TokenErrorResponse errorResponse = response.toErrorResponse();
+                if (errorResponse.getErrorObject().equals(DeviceAuthorizationGrantError.AUTHORIZATION_PENDING)) {
+
+                } else if (errorResponse.getErrorObject().equals(DeviceAuthorizationGrantError.EXPIRED_TOKEN)) {
+
+                } else if (errorResponse.getErrorObject().equals(DeviceAuthorizationGrantError.SLOW_DOWN)) {
+
+                } else {
+
+                }
+            }
+
+            AccessTokenResponse successResponse = response.toSuccessResponse();
+
+// Get the access token, the server may also return a refresh token
+            com.nimbusds.oauth2.sdk.token.AccessToken accessToken = successResponse.getTokens().getAccessToken();
+            RefreshToken refreshToken = successResponse.getTokens().getRefreshToken();
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+
 }

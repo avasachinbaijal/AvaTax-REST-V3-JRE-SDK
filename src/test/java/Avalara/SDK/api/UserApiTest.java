@@ -24,6 +24,9 @@ import Avalara.SDK.*;
 import Avalara.SDK.auth.OAuthFlow;
 import Avalara.SDK.auth.RetryingOAuth;
 import Avalara.SDK.model.IAMDS.User;
+import com.nimbusds.oauth2.sdk.ClientCredentialsGrant;
+import com.nimbusds.oauth2.sdk.device.DeviceAuthorizationSuccessResponse;
+import io.swagger.annotations.Api;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -38,11 +41,12 @@ import java.util.UUID;
 public class UserApiTest {
     private Avalara.SDK.api.IAMDS.UserApi api;
     private Configuration configuration;
+    private ApiClient apiClient;
 
     public UserApiTest() {
         configuration = getConfiguration();
         try {
-            ApiClient apiClient = new ApiClient(configuration);
+            apiClient = new ApiClient(configuration);
             api = new Avalara.SDK.api.IAMDS.UserApi(apiClient);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
@@ -61,10 +65,18 @@ public class UserApiTest {
         //configuration.setPassword("bar");
         configuration.setTimeout(5000);
         configuration.setEnvironment(AvaTaxEnvironment.Test);
-        configuration.setClientId(dotenv.get("CLIENT_ID"));
-        configuration.setClientSecret(dotenv.get("CLIENT_SECRET"));
+        configuration.setClientId("sdkDeviceFlowWebClient");
+        //configuration.setClientSecret(null);
         //configuration.setAccessToken(dotenv.get("ACCESS_TOKEN"));
-        configuration.setTokenUrl("https://dev-75323271.okta.com/oauth2/default/v1/token");
+        configuration.setTokenUrl("https://ai-awsfqa.avlr.sh/connect/token");
+        configuration.setDeviceAuthorizationUrl("https://ai-awsfqa.avlr.sh/connect/deviceauthorization");
+
+
+        //configuration.setClientId(dotenv.get("CLIENT_ID"));
+        //configuration.setClientSecret(dotenv.get("CLIENT_SECRET"));
+        //configuration.setBearerToken(dotenv.get("ACCESS_TOKEN"));
+
+
         configuration.setTestBasePath("https://localhost:3000");
         return configuration;
     }
@@ -98,8 +110,10 @@ public class UserApiTest {
     }
 
     @Test
-    public void accessTokenCacheExpiryTest() {
-        RetryingOAuth retryingOAuth = new RetryingOAuth(configuration.getTokenUrl(), configuration.getClientId(), OAuthFlow.application, configuration.getClientSecret(), null);
+    public void accessTokenCacheExpiryTest() throws InterruptedException {
+        RetryingOAuth retryingOAuth = new RetryingOAuth(configuration.getTokenUrl(), configuration.getClientId(),
+                configuration.getClientSecret(), new ClientCredentialsGrant(), null);
+
         // Scenario 1: When Token is going to expire with 5 minutes of GetAccessToken Call.
         // In this case, it should return NULL
         retryingOAuth.setAccessToken("scope1", "abc", 10L);
@@ -117,5 +131,11 @@ public class UserApiTest {
     @Ignore
     public void verifyOpenIdConfigurationTest() {
         Assert.assertEquals("https://ai-awscqa.avlr.sh/connect/token", configuration.getTokenUrl());
+    }
+
+    @Test
+    public void verifyDeviceAuthorizationFlow(){
+        DeviceAuthorizationSuccessResponse response = apiClient.initiateDeviceAuthorizationOAuth(null);
+        apiClient.getAuthorizationTokenForDeviceFlow(response.getDeviceCode().getValue());
     }
 }

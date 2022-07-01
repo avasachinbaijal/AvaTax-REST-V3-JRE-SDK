@@ -3,41 +3,37 @@ package Avalara.SDK.auth;
 import Avalara.SDK.AccessToken;
 import Avalara.SDK.ApiException;
 import Avalara.SDK.Pair;
-
+import com.nimbusds.oauth2.sdk.*;
+import com.nimbusds.oauth2.sdk.auth.ClientAuthentication;
+import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
+import com.nimbusds.oauth2.sdk.auth.Secret;
+import com.nimbusds.oauth2.sdk.id.ClientID;
+import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-
-import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.request.OAuthBearerClientRequest;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
-import org.apache.oltu.oauth2.client.request.OAuthClientRequest.TokenRequestBuilder;
-import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
-import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
-import org.apache.oltu.oauth2.common.message.types.GrantType;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.*;
 
 public class RetryingOAuth extends OAuth implements Interceptor {
-    private OAuthClient oAuthClient;
 
-    private TokenRequestBuilder tokenRequestBuilder;
+    String tokenUrl;
+    String clientId;
+    String secret;
+    AuthorizationGrant authorizationGrant;
+    Map<String, List<String>> parameters;
+
+
     private Map<String, AccessToken> accessTokenCache = new HashMap<>();
 
-    public RetryingOAuth(OkHttpClient client, TokenRequestBuilder tokenRequestBuilder) {
-        this.oAuthClient = new OAuthClient(new OAuthOkHttpClient(client));
-        this.tokenRequestBuilder = tokenRequestBuilder;
-    }
-
-    public RetryingOAuth(TokenRequestBuilder tokenRequestBuilder) {
-        this(new OkHttpClient(), tokenRequestBuilder);
-    }
 
     /**
     @param tokenUrl The token URL to be used for this OAuth2 flow.
@@ -49,39 +45,18 @@ public class RetryingOAuth extends OAuth implements Interceptor {
     public RetryingOAuth(
             String tokenUrl,
             String clientId,
-            OAuthFlow flow,
             String clientSecret,
-            Map<String, String> parameters
+            AuthorizationGrant authorizationGrant,
+            Map<String, List<String>> parameters
     ) {
-        this(OAuthClientRequest.tokenLocation(tokenUrl)
-                .setClientId(clientId)
-                .setClientSecret(clientSecret));
-        setFlow(flow);
-        if (parameters != null) {
-            for (String paramName : parameters.keySet()) {
-                tokenRequestBuilder.setParameter(paramName, parameters.get(paramName));
-            }
-        }
+        this.tokenUrl = tokenUrl;
+        this.clientId = clientId;
+        this.secret = clientSecret;
+        this.authorizationGrant = authorizationGrant;
+        this.parameters = parameters;
     }
 
-    public void setFlow(OAuthFlow flow) {
-        switch(flow) {
-            case accessCode:
-                tokenRequestBuilder.setGrantType(GrantType.AUTHORIZATION_CODE);
-                break;
-            case implicit:
-                tokenRequestBuilder.setGrantType(GrantType.IMPLICIT);
-                break;
-            case password:
-                tokenRequestBuilder.setGrantType(GrantType.PASSWORD);
-                break;
-            case application:
-                tokenRequestBuilder.setGrantType(GrantType.CLIENT_CREDENTIALS);
-                break;
-            default:
-                break;
-        }
-    }
+
 
     @Override
     public Response intercept(Chain chain) throws IOException {
@@ -134,6 +109,7 @@ public class RetryingOAuth extends OAuth implements Interceptor {
                             updateTokenAndRetryOnAuthorizationFailure
             ) {
                 try {
+                    //String scope, String requestAccessToken, String tokenUrl, String clientId, String secret
                     if (updateAccessToken(scope, requestAccessToken)) {
                         response.body().close();
                         return retryingIntercept(chain, false);
@@ -151,31 +127,8 @@ public class RetryingOAuth extends OAuth implements Interceptor {
         }
     }
 
-    /*
-     * Returns true if the access token has been updated
-     */
-    public synchronized boolean updateAccessToken(String scope, String requestAccessToken) throws IOException {
-        if (getAccessToken(scope) == null || getAccessToken(scope).equals(requestAccessToken)) {
-            try {
-                OAuthJSONAccessTokenResponse accessTokenResponse =
-                        oAuthClient.accessToken(tokenRequestBuilder.setScope(scope).buildBodyMessage());
-                if (accessTokenResponse != null && accessTokenResponse.getAccessToken() != null) {
-                    setAccessToken(scope, accessTokenResponse.getAccessToken(), accessTokenResponse.getExpiresIn());
-                }
-            } catch (OAuthSystemException | OAuthProblemException e) {
-                throw new IOException(e);
-            }
-        }
-        return getAccessToken(scope) == null || !getAccessToken(scope).equals(requestAccessToken);
-    }
 
-    public TokenRequestBuilder getTokenRequestBuilder() {
-        return tokenRequestBuilder;
-    }
 
-    public void setTokenRequestBuilder(TokenRequestBuilder tokenRequestBuilder) {
-        this.tokenRequestBuilder = tokenRequestBuilder;
-    }
 
     // Applying authorization to parameters is performed in the retryingIntercept method
     @Override
@@ -207,5 +160,62 @@ public class RetryingOAuth extends OAuth implements Interceptor {
         String[] strArray = scope.split(" ");
         Arrays.sort(strArray);
         return String.join(" ", strArray);
+    }
+
+    public synchronized boolean updateAccessToken(String scope, String requestAccessToken) {
+
+        if (getAccessToken(scope) == null || getAccessToken(scope).equals(requestAccessToken)) {
+            try {
+
+                // Construct the code grant from the code obtained from the authz endpoint
+                // and the original callback URI used at the authz endpoint
+                // The credentials to authenticate the client at the token endpoint
+                ClientID clientID = new ClientID(this.clientId);
+                Secret clientSecret = new Secret(this.secret);
+                ClientAuthentication clientAuth = new ClientSecretBasic(clientID, clientSecret);
+
+                // The token endpoint
+                URI tokenEndpoint = null;
+                try {
+                    tokenEndpoint = new URI(tokenUrl);
+                } catch (URISyntaxException e) {
+                    System.out.println("Error while creating the token URI");
+                    throw e;
+                }
+
+
+                // Make the token request
+                TokenRequest request = new TokenRequest(tokenEndpoint, clientAuth, this.authorizationGrant, new Scope(scope), null, this.parameters);
+                TokenResponse tokenResponse = null;
+                try {
+                    tokenResponse = TokenResponse.parse(request.toHTTPRequest().send());
+                } catch (IOException e) {
+                    System.out.println("Error sending the token request");
+                    throw e;
+                } catch (ParseException e) {
+                    System.out.println("Error parsing the reponse from Token request");
+                    throw e;
+                }
+
+
+                if (!tokenResponse.indicatesSuccess()) {
+                    // We got an error response...
+                    TokenErrorResponse errorResponse = tokenResponse.toErrorResponse();
+                }
+
+                AccessTokenResponse successResponse = tokenResponse.toSuccessResponse();
+
+// Get the access token, the server may also return a refresh token
+                com.nimbusds.oauth2.sdk.token.AccessToken accessToken = successResponse.getTokens().getAccessToken();
+                RefreshToken refreshToken = successResponse.getTokens().getRefreshToken();
+
+                if (accessToken != null && accessToken.getValue() != null) {
+                    setAccessToken(scope, accessToken.getValue(), accessToken.getLifetime());
+                }
+            }catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return getAccessToken(scope) == null || !getAccessToken(scope).equals(requestAccessToken);
     }
 }
