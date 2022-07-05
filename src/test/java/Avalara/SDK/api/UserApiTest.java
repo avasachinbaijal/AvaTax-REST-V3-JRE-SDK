@@ -21,12 +21,10 @@
 package Avalara.SDK.api;
 
 import Avalara.SDK.*;
-import Avalara.SDK.auth.OAuthFlow;
 import Avalara.SDK.auth.RetryingOAuth;
 import Avalara.SDK.model.IAMDS.User;
 import com.nimbusds.oauth2.sdk.ClientCredentialsGrant;
 import com.nimbusds.oauth2.sdk.device.DeviceAuthorizationSuccessResponse;
-import io.swagger.annotations.Api;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -135,7 +133,8 @@ public class UserApiTest {
 
     @Test
     public void verifyDeviceAuthorizationFlow(){
-        DeviceAuthorizationSuccessResponse response = apiClient.initiateDeviceAuthorizationOAuth(null);
-        apiClient.getAuthorizationTokenForDeviceFlow(response.getDeviceCode().getValue());
+        DeviceAuthResponse response = apiClient.initiateDeviceAuthorizationOAuth(null);
+        DeviceAccessTokenResponse tokenResponse = apiClient.getAccessTokenForDeviceFlow(response.getDeviceCode());
+        Assert.assertEquals(tokenResponse.getErrorMessage(),"authorization_pending");
     }
 }

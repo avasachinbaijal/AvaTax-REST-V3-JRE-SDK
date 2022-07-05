@@ -23,7 +23,6 @@ import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 
-import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import okhttp3.*;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -1585,8 +1584,8 @@ public class ApiClient {
     }
 
     // Initiates a device authorization OAuth flow
-    public DeviceAuthorizationSuccessResponse initiateDeviceAuthorizationOAuth(String scope) {
-
+    public DeviceAuthResponse initiateDeviceAuthorizationOAuth(String scope) {
+        DeviceAuthResponse authResponse = null;
         try {
             HTTPRequest deviceAuthorizationRequest = null;
             try {
@@ -1624,25 +1623,21 @@ public class ApiClient {
             }
 
             DeviceAuthorizationSuccessResponse successResponse = deviceAuthorizationResponse.toSuccessResponse();
+            authResponse = new DeviceAuthResponse(successResponse.getDeviceCode().getValue(), successResponse.getUserCode().getValue(),
+                    successResponse.getVerificationURI().toString(), successResponse.getVerificationURIComplete().toString(),
+                    successResponse.getLifetime(), successResponse.getInterval());
 
-            System.out.println("Device code: " + successResponse.getDeviceCode());
-            System.out.println("User code: " + successResponse.getUserCode());
-            System.out.println("Interval: " + successResponse.getInterval());
-            System.out.println("Lifetime: " + successResponse.getLifetime());
-            System.out.println("VerificationURI: " + successResponse.getVerificationURI());
-            System.out.println("Verification URI Complete: " + successResponse.getVerificationURIComplete());
-            return successResponse;
         } catch (Exception e){
             throw new RuntimeException(e);
         }
+        return  authResponse;
     }
 
 
 
-    public void getAuthorizationTokenForDeviceFlow(String deviceAuthCode ){
-
+    public DeviceAccessTokenResponse getAccessTokenForDeviceFlow(String deviceAuthCode ){
+        DeviceAccessTokenResponse tokenResponse = null;
         try {
-            AuthorizationCode code = new AuthorizationCode(deviceAuthCode);
             AuthorizationGrant codeGrant = new DeviceCodeGrant(new DeviceCode(deviceAuthCode));
             ClientID clientID = new ClientID(this.configuration.getClientId());
             URI tokenEndpoint = new URI(this.configuration.getTokenUrl());
@@ -1652,25 +1647,21 @@ public class ApiClient {
             if (!response.indicatesSuccess()) {
                 // We got an error response...
                 TokenErrorResponse errorResponse = response.toErrorResponse();
-                if (errorResponse.getErrorObject().equals(DeviceAuthorizationGrantError.AUTHORIZATION_PENDING)) {
-
-                } else if (errorResponse.getErrorObject().equals(DeviceAuthorizationGrantError.EXPIRED_TOKEN)) {
-
-                } else if (errorResponse.getErrorObject().equals(DeviceAuthorizationGrantError.SLOW_DOWN)) {
-
-                } else {
-
-                }
+                tokenResponse =  new DeviceAccessTokenResponse(errorResponse.getErrorObject().getHTTPStatusCode(),
+                        errorResponse.getErrorObject().getCode(),null, null,
+                        null, 0, null, null);
             }
 
             AccessTokenResponse successResponse = response.toSuccessResponse();
+            tokenResponse = new DeviceAccessTokenResponse(200, null, (String)successResponse.getCustomParameters().get("id_token"),
+                    successResponse.getTokens().getRefreshToken().getValue(),successResponse.getTokens().getAccessToken().getValue(),
+                    successResponse.getTokens().getAccessToken().getLifetime(), successResponse.getTokens().getAccessToken().getType().getValue(),
+                    successResponse.getTokens().getAccessToken().getScope().toString());
 
-// Get the access token, the server may also return a refresh token
-            com.nimbusds.oauth2.sdk.token.AccessToken accessToken = successResponse.getTokens().getAccessToken();
-            RefreshToken refreshToken = successResponse.getTokens().getRefreshToken();
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
+        return tokenResponse;
     }
 
 
