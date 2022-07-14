@@ -12,9 +12,12 @@ import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.apache.commons.lang3.StringUtils;
+/*
 import org.apache.oltu.oauth2.client.request.OAuthBearerClientRequest;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
+*/
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -77,26 +80,13 @@ public class RetryingOAuth extends OAuth implements Interceptor {
             updateAccessToken(scope, null);
         }
 
-        OAuthClientRequest oAuthRequest;
-        if (getAccessToken(scope) != null) {
+        //OAuthClientRequest oAuthRequest;
+        String requestAccessToken = getAccessToken(scope);
+        if (StringUtils.isNotEmpty(requestAccessToken)) {
             // Build the request
             Request.Builder requestBuilder = request.newBuilder();
-
-            String requestAccessToken = getAccessToken(scope);
-            try {
-                oAuthRequest =
-                        new OAuthBearerClientRequest(request.url().toString()).
-                                setAccessToken(requestAccessToken).
-                                buildHeaderMessage();
-            } catch (OAuthSystemException e) {
-                throw new IOException(e);
-            }
-
-            Map<String, String> headers = oAuthRequest.getHeaders();
-            for (String headerName : headers.keySet()) {
-                requestBuilder.addHeader(headerName, headers.get(headerName));
-            }
-            requestBuilder.url(oAuthRequest.getLocationUri());
+            requestBuilder.addHeader("Authorization", "Bearer" + " " + requestAccessToken);
+            requestBuilder.url(request.url().toString());
 
             // Execute the request
             Response response = chain.proceed(requestBuilder.build());
