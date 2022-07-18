@@ -63,11 +63,14 @@ public class UserApiTest {
         //configuration.setPassword("bar");
         configuration.setTimeout(5000);
         configuration.setEnvironment(AvaTaxEnvironment.Test);
-        configuration.setClientId("sdkDeviceFlowWebClient");
+        //configuration.setClientId("sdkDeviceFlowWebClient");
         //configuration.setClientSecret(null);
+        configuration.setClientId(dotenv.get("CLIENT_ID"));
+        configuration.setClientSecret(dotenv.get("CLIENT_SECRET"));
+        configuration.setTokenUrl("https://dev-75323271.okta.com/oauth2/default/v1/token");
         //configuration.setAccessToken(dotenv.get("ACCESS_TOKEN"));
-        configuration.setTokenUrl("https://ai-awsfqa.avlr.sh/connect/token");
-        configuration.setDeviceAuthorizationUrl("https://ai-awsfqa.avlr.sh/connect/deviceauthorization");
+        //configuration.setTokenUrl("https://ai-awsfqa.avlr.sh/connect/token");
+        //configuration.setDeviceAuthorizationUrl("https://ai-awsfqa.avlr.sh/connect/deviceauthorization");
 
 
         //configuration.setClientId(dotenv.get("CLIENT_ID"));
@@ -129,12 +132,5 @@ public class UserApiTest {
     @Ignore
     public void verifyOpenIdConfigurationTest() {
         Assert.assertEquals("https://ai-awscqa.avlr.sh/connect/token", configuration.getTokenUrl());
-    }
-
-    @Test
-    public void verifyDeviceAuthorizationFlow(){
-        DeviceAuthResponse response = apiClient.initiateDeviceAuthorizationOAuth(null);
-        DeviceAccessTokenResponse tokenResponse = apiClient.getAccessTokenForDeviceFlow(response.getDeviceCode());
-        Assert.assertEquals(tokenResponse.getErrorMessage(),"authorization_pending");
     }
 }

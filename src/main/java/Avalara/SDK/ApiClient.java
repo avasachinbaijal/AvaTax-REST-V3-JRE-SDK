@@ -15,13 +15,7 @@ package Avalara.SDK;
 
 import Avalara.SDK.auth.*;
 
-import com.google.gson.reflect.TypeToken;
-
 import com.nimbusds.oauth2.sdk.*;
-import com.nimbusds.oauth2.sdk.device.*;
-import com.nimbusds.oauth2.sdk.http.HTTPRequest;
-import com.nimbusds.oauth2.sdk.http.HTTPResponse;
-import com.nimbusds.oauth2.sdk.id.ClientID;
 
 import okhttp3.*;
 import okhttp3.Request;
@@ -45,7 +39,6 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.file.Files;
@@ -109,23 +102,15 @@ public class ApiClient {
         initHttpClient();
 
         // Setup authentications (key: authentication name, value: authentication).
-        if (config.getClientId() != null) {
-            String tokenUrl = null;
-            String deviceAuthorizationUrl = null;
-            if(config.getClientSecret() == null) {
-                tokenUrl = getTokenUrl(config);
-                deviceAuthorizationUrl = getDeviceAuthorizationUrl(config);
-            }
-
-            if(config.getClientSecret() != null) {
-                RetryingOAuth retryingOAuth = new RetryingOAuth(tokenUrl, config.getClientId(),
-                        config.getClientSecret(), new ClientCredentialsGrant(), null);
-                authentications.put(
-                        "OAuth",
-                        retryingOAuth
-                );
-                initHttpClient(Collections.<Interceptor>singletonList(retryingOAuth));
-            }
+        if (StringUtils.isNotEmpty(config.getClientId()) && StringUtils.isEmpty(config.getBearerToken())) {
+            OpenIdHelper.populateConfigWithOpenIdDetails(config);
+            RetryingOAuth retryingOAuth = new RetryingOAuth(config.getTokenUrl(), config.getClientId(),
+                    config.getClientSecret(), new ClientCredentialsGrant(), null);
+            authentications.put(
+                    "OAuth",
+                    retryingOAuth
+            );
+            initHttpClient(Collections.<Interceptor>singletonList(retryingOAuth));
         }
 
         // Set Authentication type based on Configuration passed into the ApiClient
@@ -543,83 +528,6 @@ public class ApiClient {
         this.tempFolderPath = tempFolderPath;
         return this;
     }
-
-    public String getTokenUrl(Configuration config) throws Exception {
-        AvaTaxEnvironment env = config.getEnvironment();
-        switch (env) {
-            case Production:
-                return fetchTokenURLFromOpenIdConnect(ApiConstants.OPENID_CONNECT_URL_PRD, config);
-            case Sandbox:
-                return fetchTokenURLFromOpenIdConnect(ApiConstants.OPENID_CONNECT_URL_SBX, config);
-            case QA:
-                return fetchTokenURLFromOpenIdConnect(ApiConstants.OPENID_CONNECT_URL_QA, config);
-            case Test:
-                String tokenUrl = config.getTokenUrl();
-                if (tokenUrl == null) {
-                    throw new Exception("When using the Test Environment, a tokenUrl must be specified for OAuth2 token retrieval.");
-                }
-                return tokenUrl;
-        }
-        return "";
-    }
-
-    public String getDeviceAuthorizationUrl(Configuration config) throws Exception {
-        AvaTaxEnvironment env = config.getEnvironment();
-        switch (env) {
-            case Production:
-                return fetchDeviceAuthorizationURLFromOpenIdConnect(ApiConstants.OPENID_CONNECT_URL_PRD, config);
-            case Sandbox:
-                return fetchDeviceAuthorizationURLFromOpenIdConnect(ApiConstants.OPENID_CONNECT_URL_SBX, config);
-            case QA:
-                return fetchDeviceAuthorizationURLFromOpenIdConnect(ApiConstants.OPENID_CONNECT_URL_QA, config);
-            case Test:
-                String deviceAuthorizationUrl = config.getDeviceAuthorizationUrl();
-                if (deviceAuthorizationUrl == null) {
-                    throw new Exception("When using the Test Environment, an authorization url must be specified for OAuth2 token retrieval.");
-                }
-                return deviceAuthorizationUrl;
-        }
-        return "";
-    }
-
-    /**
-     * Method to fetch the Token URL from OpenID Configuration
-     */
-    private String fetchTokenURLFromOpenIdConnect(String url, Configuration config) throws ApiException {
-        try {
-            final Request.Builder reqBuilder = new Request.Builder().url(url);
-            Request request = reqBuilder.method("GET", null).build();
-            Type localVarReturnType = new TypeToken<OpenIdConnectURLs>() {}.getType();
-            ApiResponse<OpenIdConnectURLs> response = execute(httpClient.newCall(request), localVarReturnType);
-            OpenIdConnectURLs openIdConnectURLs = response.getData();
-            config.setTokenUrl(openIdConnectURLs.getTokenEndpoint());
-            return openIdConnectURLs.getTokenEndpoint();
-        } catch(Exception ex) {
-            System.err.println("Exception when calling OpenIdConnect to fetch the token endpoint");
-            ex.printStackTrace();
-            throw ex;
-        }
-    }
-
-    /**
-     * Method to fetch the Token URL from OpenID Configuration
-     */
-    private String fetchDeviceAuthorizationURLFromOpenIdConnect(String url, Configuration config) throws ApiException {
-        try {
-            final Request.Builder reqBuilder = new Request.Builder().url(url);
-            Request request = reqBuilder.method("GET", null).build();
-            Type localVarReturnType = new TypeToken<OpenIdConnectURLs>() {}.getType();
-            ApiResponse<OpenIdConnectURLs> response = execute(httpClient.newCall(request), localVarReturnType);
-            OpenIdConnectURLs openIdConnectURLs = response.getData();
-            config.setDeviceAuthorizationUrl(openIdConnectURLs.getDeviceAuthorizationEndpoint());
-            return openIdConnectURLs.getDeviceAuthorizationEndpoint();
-        } catch(Exception ex) {
-            System.err.println("Exception when calling OpenIdConnect to fetch the token endpoint");
-            ex.printStackTrace();
-            throw ex;
-        }
-    }
-
     /**
      * Get connection timeout (in milliseconds).
      *
@@ -1582,87 +1490,4 @@ public class ApiClient {
         // empty http request body
         return "";
     }
-
-    // Initiates a device authorization OAuth flow
-    public DeviceAuthResponse initiateDeviceAuthorizationOAuth(String scope) {
-        DeviceAuthResponse authResponse = null;
-        try {
-            HTTPRequest deviceAuthorizationRequest = null;
-            try {
-                deviceAuthorizationRequest = new DeviceAuthorizationRequest.Builder(new ClientID(this.configuration.getClientId()))
-                        .scope(StringUtils.isNotEmpty(scope)?new Scope(scope):null)
-                        .endpointURI(new URI(this.configuration.getDeviceAuthorizationUrl()))
-                        .build()
-                        .toHTTPRequest();
-            } catch (URISyntaxException e) {
-                System.out.println("Unable to parse the device authorization uri");
-                throw e;
-            }
-
-
-            HTTPResponse deviceAuthorizationHttpResponse = null;
-            try {
-                deviceAuthorizationHttpResponse = deviceAuthorizationRequest.send();
-            } catch (IOException e) {
-                System.out.println("Unable to get the response from device Authorization HTTP Request");
-                throw e;
-            }
-
-            // Parse the response
-            DeviceAuthorizationResponse deviceAuthorizationResponse = null;
-            try {
-                deviceAuthorizationResponse = DeviceAuthorizationResponse.parse(deviceAuthorizationHttpResponse);
-            } catch (ParseException e) {
-                System.out.println("Unable to parse the response from device Authorization Request");
-                throw e;
-            }
-
-            if (!deviceAuthorizationResponse.indicatesSuccess()) {
-                System.out.println("Error: " + deviceAuthorizationResponse.toErrorResponse().getErrorObject());
-                throw new Exception(deviceAuthorizationResponse.toErrorResponse().getErrorObject().toString());
-            }
-
-            DeviceAuthorizationSuccessResponse successResponse = deviceAuthorizationResponse.toSuccessResponse();
-            authResponse = new DeviceAuthResponse(successResponse.getDeviceCode().getValue(), successResponse.getUserCode().getValue(),
-                    successResponse.getVerificationURI().toString(), successResponse.getVerificationURIComplete().toString(),
-                    successResponse.getLifetime(), successResponse.getInterval());
-
-        } catch (Exception e){
-            throw new RuntimeException(e);
-        }
-        return  authResponse;
-    }
-
-
-
-    public DeviceAccessTokenResponse getAccessTokenForDeviceFlow(String deviceAuthCode ){
-        DeviceAccessTokenResponse tokenResponse = null;
-        try {
-            AuthorizationGrant codeGrant = new DeviceCodeGrant(new DeviceCode(deviceAuthCode));
-            ClientID clientID = new ClientID(this.configuration.getClientId());
-            URI tokenEndpoint = new URI(this.configuration.getTokenUrl());
-            TokenRequest request = new TokenRequest(tokenEndpoint, clientID, codeGrant);
-            TokenResponse response = TokenResponse.parse(request.toHTTPRequest().send());
-
-            if (!response.indicatesSuccess()) {
-                // We got an error response...
-                TokenErrorResponse errorResponse = response.toErrorResponse();
-                tokenResponse =  new DeviceAccessTokenResponse(errorResponse.getErrorObject().getHTTPStatusCode(),
-                        errorResponse.getErrorObject().getCode(),null, null,
-                        null, 0, null, null);
-            }
-
-            AccessTokenResponse successResponse = response.toSuccessResponse();
-            tokenResponse = new DeviceAccessTokenResponse(200, null, (String)successResponse.getCustomParameters().get("id_token"),
-                    successResponse.getTokens().getRefreshToken().getValue(),successResponse.getTokens().getAccessToken().getValue(),
-                    successResponse.getTokens().getAccessToken().getLifetime(), successResponse.getTokens().getAccessToken().getType().getValue(),
-                    successResponse.getTokens().getAccessToken().getScope().toString());
-
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-        return tokenResponse;
-    }
-
-
 }
